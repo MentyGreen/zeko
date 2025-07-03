@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeko — Документация</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+
+    /* Базовые стили */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0a0a0a, #121224);
+      font-family: 'Montserrat', sans-serif;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Анимация градиента для хедера */
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Частицы фона */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(77, 171, 255, 0.3);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      to {
+        transform: translateY(-100vh);
+      }
+    }
+
+    /* Прелоадер */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-circle {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(77, 171, 255, 0.2);
+      border-top-color: #4dabff;
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Общие анимации */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px #4dabff; }
+      50% { text-shadow: 0 0 20px #4dabff; }
+    }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(270deg, #0b0b0c, #0f0f16, #151523);
+      background-size: 200% 200%;
+      animation: gradientFlow 12s ease infinite;
+      box-shadow: 0 3px 20px rgba(77, 171, 255, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    .logo-container img {
+      height: 52px;
+      width: auto;
+      filter: drop-shadow(0 0 8px #4dabff);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    
+    .logo-container img:hover {
+      transform: scale(1.1) rotate(5deg);
+      filter: drop-shadow(0 0 15px #4dabff);
+      animation: none;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav-buttons a {
+      color: #fff;
+      text-decoration: none;
+      padding: 0.7rem 1.5rem;
+      border: 2px solid #4dabff;
+      border-radius: 10px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      background: rgba(77, 171, 255, 0.1);
+      box-shadow: 0 0 10px rgba(77, 171, 255, 0.3);
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .nav-buttons a:nth-child(1) {
+      animation: fadeInUp 0.6s ease forwards;
+      animation-delay: 0.7s;
+    }
+    .nav-buttons a:nth-child(2) {
+      animation: fadeInUp 0.6s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    .nav-buttons a::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(77, 171, 255, 0.3),
+        rgba(77, 171, 255, 0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .nav-buttons a:hover {
+      background: rgba(77, 171, 255, 0.3);
+      color: #fff;
+      box-shadow: 0 0 20px #4dabff;
+      transform: translateY(-2px);
+    }
+
+    .nav-buttons a:hover::before {
+      animation: buttonShine 1.5s ease infinite;
+    }
+
+    @keyframes buttonShine {
+      0% { transform: rotate(30deg) translate(-20%, -20%); }
+      100% { transform: rotate(30deg) translate(20%, 20%); }
+    }
+
+    .docs-container {
+      flex: 1;
+      padding: 4rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s ease forwards;
+      animation-delay: 0.3s;
+    }
+
+    h1.docs-title {
+      color: #4dabff;
+      font-size: 3.5rem;
+      font-weight: 900;
+      margin-bottom: 2rem;
+      text-align: center;
+      letter-spacing: 2px;
+      text-shadow: 0 0 15px #4dabff;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    h2.section-title {
+      color: #4dabff;
+      font-size: 2.2rem;
+      margin: 3rem 0 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid rgba(77, 171, 255, 0.3);
+      position: relative;
+    }
+
+    h2.section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 150px;
+      height: 2px;
+      background: #4dabff;
+    }
+
+    h3.subsection-title {
+      color: #82b1ff;
+      font-size: 1.5rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .class-card {
+      background: rgba(17, 17, 51, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 30px rgba(77, 171, 255, 0.2);
+      border: 1px solid rgba(77, 171, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .class-card:hover {
+      box-shadow: 0 0 40px rgba(77, 171, 255, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .class-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .class-icon {
+      font-size: 2.5rem;
+      margin-right: 1rem;
+    }
+
+    .class-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #4dabff;
+    }
+
+    .class-description {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #cfdfff;
+      margin-bottom: 1.5rem;
+    }
+
+    .pros-cons-container {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .pros-cons-container {
+        flex-direction: column;
+      }
+    }
+
+    .pros-list, .cons-list {
+      flex: 1;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    .pros-list {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid rgba(0, 255, 136, 0.3);
+    }
+
+    .cons-list {
+      background: rgba(255, 77, 77, 0.1);
+      border: 1px solid rgba(255, 77, 77, 0.3);
+    }
+
+    .ability-card {
+      background: rgba(77, 171, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 10px;
+      border-left: 4px solid #4dabff;
+      margin-top: 1.5rem;
+    }
+
+    .ability-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #4dabff;
+      margin-bottom: 0.5rem;
+    }
+
+    .ability-description {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #cfdfff;
+    }
+
+    .ability-cooldown {
+      margin-top: 0.5rem;
+      font-style: italic;
+      color: #b0c7ff;
+    }
+
+    .mechanic-card {
+      background: rgba(30, 30, 60, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 0 30px rgba(77, 171, 255, 0.2);
+      border: 1px solid rgba(77, 171, 255, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .mechanic-card:hover {
+      box-shadow: 0 0 40px rgba(77, 171, 255, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .mechanic-description {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #cfdfff;
+      margin-bottom: 1rem;
+    }
+
+    .mechanic-details {
+      margin-top: 1.5rem;
+      padding-left: 1rem;
+      border-left: 3px solid rgba(77, 171, 255, 0.5);
+    }
+
+    .detail-item {
+      margin-bottom: 0.8rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .detail-item::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #4dabff;
+      font-size: 1.2rem;
+    }
+
+    .warning-note {
+      background: rgba(255, 165, 0, 0.1);
+      border-left: 4px solid #ffa500;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .note-title {
+      font-weight: 700;
+      color: #ffa500;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Эффект параллакса для фона */
+    .parallax-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="%234dabff22" d="M0,0 L100,0 L100,100 L0,100 Z"/></svg>') center/cover no-repeat;
+    }
+
+    /* Адаптив */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      
+      .nav-buttons {
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      h1.docs-title {
+        font-size: 2.5rem;
+      }
+      
+      h2.section-title {
+        font-size: 1.8rem;
+      }
+      
+      .docs-container {
+        padding: 2rem 1rem;
+      }
+      
+      .class-card, .mechanic-card {
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1.docs-title {
+        font-size: 2rem;
+      }
+      
+      h2.section-title {
+        font-size: 1.5rem;
+      }
+      
+      .nav-buttons a {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+      
+      .class-name {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Прелоадер -->
+  <div class="loading" id="loading">
+    <div class="loading-circle"></div>
+  </div>
+
+  <!-- Фоновые элементы -->
+  <div class="parallax-bg"></div>
+  <div class="particles" id="particles"></div>
+
+  <header>
+    <div class="logo-container">
+      <a href="index.html" aria-label="Главная">
+        <img src="logo.png" alt="Zeko logo" />
+      </a>
+    </div>
+    <div class="nav-buttons" role="navigation" aria-label="Навигация">
+      <a href="index.html">На главную</a>
+      <a href="popad.html">Как попасть</a>
+    </div>
+  </header>
+  
+  <div class="docs-container">
+    <h1 class="docs-title">Документация Zeko</h1>
+    
+    <section id="classes">
+      <h2 class="section-title">Система классов</h2>
+      <p class="class-description">В начале каждого сезона игроки должны выбрать класс, который определит их стиль игры. Каждый класс обладает уникальными преимуществами, недостатками и специальной способностью. Выбор класса — это стратегическое решение, которое повлияет на весь ваш игровой процесс.</p>
+      
+      <!-- Шахтёр -->
+      <div class="class-card">
+        <div class="class-header">
+          <div class="class-icon">⛏️</div>
+          <div class="class-name">Шахтёр</div>
+        </div>
+        <p class="class-description">Мастер подземелий и добычи ресурсов. Шахтёры чувствуют себя как дома в тёмных шахтах, но страдают на поверхности.</p>
+        
+        <div class="pros-cons-container">
+          <div class="pros-list">
+            <h3 class="subsection-title">Преимущества</h3>
+            <ul>
+              <li>Видит в темноте (Night Vision)</li>
+              <li>+50% добычи руды</li>
+              <li>Сопротивление взрывам (−50% урона)</li>
+            </ul>
+          </div>
+          
+          <div class="cons-list">
+            <h3 class="subsection-title">Недостатки</h3>
+            <ul>
+              <li>Слепота днём на поверхности</li>
+              <li>Быстрее тратит еду при копании</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="ability-card">
+          <div class="ability-name">Добывающий заряд</div>
+          <p class="ability-description">Ставит улучшенную ТНТ, которая разрушает блоки, но сохраняет руду в радиусе 4 блоков. Взрыв не вредит игроку (только отбрасывание и звук).</p>
+          <div class="ability-cooldown">Без перезарядки</div>
+        </div>
+      </div>
+      
+      <!-- Фермер -->
+      <div class="class-card">
+        <div class="class-header">
+          <div class="class-icon">🌾</div>
+          <div class="class-name">Фермер</div>
+        </div>
+        <p class="class-description">Повелитель урожаев и селекционер. Фермеры создают изобилие пищи, но уязвимы к атакам.</p>
+        
+        <div class="pros-cons-container">
+          <div class="pros-list">
+            <h3 class="subsection-title">Преимущества</h3>
+            <ul>
+              <li>Ускоренный рост растений в радиусе 5 блоков</li>
+              <li>+30% урожая</li>
+              <li>Высокий шанс выведения улучшенных генов растений</li>
+            </ul>
+          </div>
+          
+          <div class="cons-list">
+            <h3 class="subsection-title">Недостатки</h3>
+            <ul>
+              <li>+20% урона от мобов</li>
+              <li>+20% урона от огня</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="ability-card">
+          <div class="ability-name">Росток жизни</div>
+          <p class="ability-description">Мгновенно выращивает все культуры вокруг в радиусе 5 блоков до максимальной стадии.</p>
+          <div class="ability-cooldown">Перезарядка: 5 минут</div>
+        </div>
+      </div>
+      
+      <!-- Мечник -->
+      <div class="class-card">
+        <div class="class-header">
+          <div class="class-icon">🗡️</div>
+          <div class="class-name">Мечник</div>
+        </div>
+        <p class="class-description">Мастер ближнего боя. Мечники наносят сокрушительные удары, но страдают от дальних атак.</p>
+        
+        <div class="pros-cons-container">
+          <div class="pros-list">
+            <h3 class="subsection-title">Преимущества</h3>
+            <ul>
+              <li>+20% урона мечом</li>
+              <li>Увеличенная скорость с мечом в руках</li>
+            </ul>
+          </div>
+          
+          <div class="cons-list">
+            <h3 class="subsection-title">Недостатки</h3>
+            <ul>
+              <li>+25% урона от дальних атак</li>
+              <li>Медленная добыча киркой и топором</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="ability-card">
+          <div class="ability-name">Прорыв</div>
+          <p class="ability-description">Следующая атака наносит повышенный урон и отталкивает врагов перед собой. После использования накладывается слабость на 10 секунд.</p>
+          <div class="ability-cooldown">Перезарядка: 1 минута</div>
+        </div>
+      </div>
+      
+      <div class="class-card">
+        <div class="class-header">
+          <div class="class-icon">🪗</div>
+          <div class="class-name">Арбалетчик</div>
+        </div>
+        <p class="class-description">Точный и смертоносный стрелок, разящий врагов издалека</p>
+        
+        <div class="pros-cons-container">
+          <div class="pros-list">
+            <h3 class="subsection-title">Преимущества</h3>
+            <ul>
+              <li>Ускоренная зарядка</li>
+              <li>Повышенный урон арбалетом</li>
+            </ul>
+          </div>
+          
+          <div class="cons-list">
+            <h3 class="subsection-title">Недостатки</h3>
+            <ul>
+              <li>При натяжении арбалета получает повышенный урон.</li>
+              <li>Медленный при стрельбе (Slowness I).</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="ability-card">
+          <div class="ability-name">Проникающий заряд</div>
+          <p class="ability-description">Выстрел, игнорирующий щиты и броню, пробивает до 3 целей.</p>
+          <div class="ability-cooldown">Перезарядка 60 секунд</div>
+        </div>
+      </div>
+	  
+	  <div class="class-card">
+        <div class="class-header">
+          <div class="class-icon">🛡️</div>
+          <div class="class-name">Герой</div>
+        </div>
+        <p class="class-description">Лидер и защитник, вдохновляющий союзников на подвиги</p>
+        
+        <div class="pros-cons-container">
+          <div class="pros-list">
+            <h3 class="subsection-title">Преимущества</h3>
+            <ul>
+              <li>−20% урона от мобов.</li>
+              <li>Больше опыта за убийства.</li>
+              <li>Может использовать зелья (кроме отравление).</li>
+            </ul>
+          </div>
+          
+          <div class="cons-list">
+            <h3 class="subsection-title">Недостатки</h3>
+            <ul>
+              <li>Всегда становится целью ближайшего моба.</li>
+              <li>Урон от зелий вреда повышен.</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="ability-card">
+          <div class="ability-name">Боевой клич</div>
+          <p class="ability-description">Даёт всем союзникам Сила I и Скорость I на 15 секунд (радиус 10 блоков).</p>
+          <div class="ability-cooldown">Перезарядка 60 секунд</div>
+        </div>
+      </div>
+	  
+	  Так же уже на сервере вы узнаете и другие классы
+      
+    </section>
+    
+    <section id="farming">
+      <h2 class="section-title">Фермерство с генетикой</h2>
+      <div class="mechanic-card">
+        <h3 class="subsection-title">Усложнённая система выращивания</h3>
+        <p class="mechanic-description">
+          На сервере Zeko фермерство — это настоящая наука. Каждое растение обладает уникальным генетическим кодом, который влияет на его характеристики. 
+          Теперь выращивание культур требует стратегического подхода и внимания к деталям.
+        </p>
+        
+        <div class="mechanic-details">
+          <div class="detail-item"><strong>Гены растений:</strong> Каждое растение имеет 5 генов, обозначаемых буквами:</div>
+          <div class="detail-item"><strong>S</strong> - Скорость роста</div>
+          <div class="detail-item"><strong>Y</strong> - Урожайность</div>
+          <div class="detail-item"><strong>F</strong> - Устойчивость к погоде</div>
+          <div class="detail-item"><strong>A</strong> - Замедление роста</div>
+          <div class="detail-item"><strong>N</strong> - Пустой ген (нейтральный)</div>
+          
+          <div class="warning-note">
+            <div class="note-title">Важно!</div>
+            <p>Стандартные автоматические фермы не работают на сервере. Вам придётся разрабатывать новые системы с учётом генетики растений.</p>
+          </div>
+          
+          <div class="detail-item"><strong>Мутация растений:</strong> Гены могут изменяться при соседстве с другими растениями того же вида.</div>
+          <div class="detail-item">Пример: растение с геном ANNNN рядом с тремя растениями SNNNN мутирует в SNNNN.</div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="temperature">
+      <h2 class="section-title">Система температуры</h2>
+      <div class="mechanic-card">
+        <h3 class="subsection-title">Реалистичный климат</h3>
+        <p class="mechanic-description">
+          Температура теперь влияет на игровой процесс. В зависимости от биома, близости к источникам тепла или холода, 
+          вы будете испытывать различные эффекты — от полезных до опасных для жизни.
+        </p>
+        
+        <div class="mechanic-details">
+          <div class="detail-item"><strong>Средняя температура:</strong> 25°C (нейтральная зона)</div>
+          <div class="detail-item"><strong>Источники тепла:</strong> Лава, магма, огонь, костры, факелы</div>
+          <div class="detail-item"><strong>Источники холода:</strong> Лёд, вода, снег, снежные блоки</div>
+          
+          <h3 class="subsection-title">Эффекты температуры</h3>
+          <div class="detail-item"><strong>35°C+:</strong> Солнечный удар (помутнение зрения)</div>
+          <div class="detail-item"><strong>40°C+:</strong> Начинается урон от перегрева</div>
+          <div class="detail-item"><strong>10°C-:</strong> Замедление и снижение скорости добычи</div>
+          <div class="detail-item"><strong>0°C-:</strong> Урон от переохлаждения</div>
+          
+          <div class="detail-item"><strong>Особые зоны:</strong></div>
+          <div class="detail-item">Ад: +100°C (экстремальная жара)</div>
+          <div class="detail-item">Энд: -100°C (экстремальный холод)</div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="biomes">
+      <h2 class="section-title">Новые биомы и структуры</h2>
+      <div class="mechanic-card">
+        <h3 class="subsection-title">Уникальные локации</h3>
+        <p class="mechanic-description">
+          Сервер Zeko предлагает совершенно новые биомы с уникальными структурами, мобами и редкими ресурсами. 
+          Исследуйте мир, находите секреты и собирайте эксклюзивные предметы, доступные только в определённых локациях.
+        </p>
+        
+        <div class="mechanic-details">
+          <div class="detail-item"><strong>Заброшенные магические башни:</strong> Содержат древние знания и артефакты</div>
+          <div class="detail-item"><strong>Подземные города:</strong> Сложные лабиринты с сокровищами и ловушками</div>
+          <div class="detail-item"><strong>Плавающие острова:</strong> Уникальные растения и мобы, недоступные на поверхности</div>
+          <div class="detail-item"><strong>Заражённые леса:</strong> Опасные зоны с мутировавшими существами</div>
+          <div class="detail-item"><strong>Кристальные пещеры:</strong> Источники редких минералов с особыми свойствами</div>
+        </div>
+      </div>
+    </section>
+  </div>
+  а так же у нас есть лор и сюжет. только чшш
+  <script>
+    // Скрываем прелоадер после загрузки
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loading').style.display = 'none';
+        }, 500);
+      }, 1000);
+    });
+
+    // Создаем фоновые частицы
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = window.innerWidth < 768 ? 20 : 40;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Случайные параметры частицы
+        const size = Math.random() * 6 + 2;
+        const posX = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * -20;
+        const opacity = Math.random() * 0.4 + 0.1;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.bottom = `-${size}px`;
+        particle.style.opacity = opacity;
+        particle.style.animation = `float ${duration}s linear infinite`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        // Случайный цвет частицы
+        const hue = 200 + Math.random() * 40; // голубые оттенки
+        particle.style.background = `hsla(${hue}, 100%, 70%, ${opacity})`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Запускаем создание частиц
+    createParticles();
+
+    // Параллакс эффект для фона
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      
+      document.querySelector('.parallax-bg').style.transform = `
+        translate(${x * 20 - 10}px, ${y * 20 - 10}px)
+      `;
+    });
+  </script>
+</body>
+</html>

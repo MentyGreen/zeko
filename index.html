@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeko — Главная</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+
+    /* Базовые стили */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0a0a0a, #121224);
+      font-family: 'Montserrat', sans-serif;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Анимация градиента для хедера */
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Частицы фона */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(77, 171, 255, 0.3);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      to {
+        transform: translateY(-100vh);
+      }
+    }
+
+    /* Прелоадер */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-circle {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(77, 171, 255, 0.2);
+      border-top-color: #4dabff;
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Общие анимации */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px #4dabff; }
+      50% { text-shadow: 0 0 20px #4dabff; }
+    }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(270deg, #0b0b0c, #0f0f16, #151523);
+      background-size: 200% 200%;
+      animation: gradientFlow 12s ease infinite;
+      box-shadow: 0 3px 20px rgba(77, 171, 255, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    .logo-container img {
+      height: 52px;
+      width: auto;
+      filter: drop-shadow(0 0 8px #4dabff);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      animation: pulse 3s ease-in-out infinite;
+    }
+    
+    .logo-container img:hover {
+      transform: scale(1.1) rotate(5deg);
+      filter: drop-shadow(0 0 15px #4dabff);
+      animation: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: #4dabff;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4dabff;
+      transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .auth-buttons a {
+      color: #fff;
+      text-decoration: none;
+      padding: 0.7rem 1.5rem;
+      border: 2px solid #4dabff;
+      border-radius: 10px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      background: rgba(77, 171, 255, 0.1);
+      box-shadow: 0 0 10px rgba(77, 171, 255, 0.3);
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .auth-buttons a:nth-child(1) {
+      animation: fadeInUp 0.6s ease forwards;
+      animation-delay: 0.7s;
+    }
+    .auth-buttons a:nth-child(2) {
+      animation: fadeInUp 0.6s ease forwards;
+      animation-delay: 0.8s;
+    }
+    .auth-buttons a:nth-child(3) {
+      animation: fadeInUp 0.6s ease forwards;
+      animation-delay: 0.9s;
+    }
+
+    .auth-buttons a::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(77, 171, 255, 0.3),
+        rgba(77, 171, 255, 0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .auth-buttons a:hover {
+      background: rgba(77, 171, 255, 0.3);
+      color: #fff;
+      box-shadow: 0 0 20px #4dabff;
+      transform: translateY(-2px);
+    }
+
+    .auth-buttons a:hover::before {
+      animation: buttonShine 1.5s ease infinite;
+    }
+
+    @keyframes buttonShine {
+      0% { transform: rotate(30deg) translate(-20%, -20%); }
+      100% { transform: rotate(30deg) translate(20%, 20%); }
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem 6rem;
+      background: linear-gradient(145deg, #080810, #15152c);
+      max-width: 900px;
+      margin: 2rem auto;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(77, 171, 255, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s ease forwards;
+      animation-delay: 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    main::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(77, 171, 255, 0.05) 0%, transparent 70%);
+      animation: rotateGradient 20s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotateGradient {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    h1 {
+      color: #4dabff;
+      font-size: 5rem;
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      letter-spacing: 3px;
+      text-shadow: 0 0 15px #4dabff;
+      user-select: none;
+      text-transform: uppercase;
+      animation: glow 3s ease-in-out infinite, floatUpDown 4s ease-in-out infinite;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards, glow 3s ease-in-out infinite, floatUpDown 4s ease-in-out infinite;
+      animation-delay: 0.6s;
+    }
+
+    p.subtitle {
+      font-size: 1.3rem;
+      max-width: 800px;
+      margin-bottom: 3rem;
+      line-height: 1.6;
+      color: #b0c7ff;
+      user-select: none;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 0.8s;
+    }
+
+    .features {
+      text-align: left;
+      max-width: 700px;
+      background: rgba(17, 17, 51, 0.7);
+      backdrop-filter: blur(10px);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(77, 171, 255, 0.3);
+      margin-bottom: 3.5rem;
+      color: #cfdfff;
+      user-select: none;
+      font-weight: 500;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      letter-spacing: 0.02em;
+      border: 1px solid rgba(77, 171, 255, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 1s;
+    }
+
+    .features p {
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      padding-left: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .features p:hover {
+      transform: translateX(5px);
+    }
+
+    .features p::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #4dabff;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .features p:hover::before {
+      width: 6px;
+      background: #00ff88;
+    }
+
+    .features p::after {
+      content: '✓';
+      color: #00ff88;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .features a {
+      color: #82b1ff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .features a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4dabff;
+      transition: width 0.3s ease;
+    }
+    
+    .features a:hover {
+      color: #4dabff;
+    }
+    
+    .features a:hover::after {
+      width: 100%;
+    }
+
+    .join-button {
+      background: linear-gradient(135deg, #4dabff, #2979ff);
+      color: #fff;
+      border: none;
+      padding: 1.2rem 3.5rem;
+      font-size: 1.4rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow:
+        0 0 15px #4dabff,
+        0 4px 20px #2979ff;
+      transition: all 0.35s ease;
+      user-select: none;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      animation: fadeInUp 0.8s ease forwards, pulse 2s ease-in-out infinite;
+      animation-delay: 1.2s;
+    }
+
+    .join-button::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .join-button:hover {
+      background: linear-gradient(135deg, #2979ff, #4dabff);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow:
+        0 0 25px #4dabff,
+        0 6px 25px #2979ff;
+    }
+
+    .join-button:hover::before {
+      animation: buttonShine 1.5s ease infinite;
+    }
+
+    .join-button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 0 15px #4dabff;
+    }
+
+    /* Стили для проектов */
+    .projects {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 3rem;
+      max-width: 900px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 1.4s;
+    }
+
+    .project {
+      background: rgba(20, 20, 40, 0.7);
+      border-radius: 15px;
+      padding: 1.5rem;
+      width: 250px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(77, 171, 255, 0.2);
+      text-align: left;
+    }
+
+    .project:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(77, 171, 255, 0.3);
+      border-color: rgba(77, 171, 255, 0.5);
+    }
+
+    .project-image {
+      width: 100%;
+      height: 140px;
+      border-radius: 10px;
+      object-fit: cover;
+      margin-bottom: 1rem;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .project-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #4dabff;
+    }
+
+    .project-status {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      color: #ff4d4d;
+    }
+
+    .project-status.soon {
+      color: #4dff88;
+    }
+
+    .project-description {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #b0c7ff;
+    }
+
+    .project-link {
+      color: #82b1ff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
+      margin-top: 0.8rem;
+    }
+    
+    .project-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4dabff;
+      transition: width 0.3s ease;
+    }
+    
+    .project-link:hover {
+      color: #4dabff;
+    }
+    
+    .project-link:hover::after {
+      width: 100%;
+    }
+
+    /* Эффект параллакса для фона */
+    .parallax-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="%234dabff22" d="M0,0 L100,0 L100,100 L0,100 Z"/></svg>') center/cover no-repeat;
+    }
+
+    /* Гамбургер меню для мобильной версии */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 21px;
+      cursor: pointer;
+      z-index: 101;
+    }
+
+    .menu-toggle span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: #fff;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+
+    /* Адаптив */
+    @media (max-width: 992px) {
+      h1 {
+        font-size: 4rem;
+      }
+      
+      .features {
+        padding: 2rem;
+      }
+      
+      .project {
+        width: calc(50% - 2rem);
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-wrap: wrap;
+        padding: 1rem;
+      }
+      
+      .logo-container {
+        order: 1;
+      }
+      
+      .menu-toggle {
+        display: flex;
+        order: 2;
+      }
+      
+      .nav-links {
+        display: none;
+        order: 4;
+        width: 100%;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(77, 171, 255, 0.2);
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      .auth-buttons {
+        order: 3;
+        margin-left: auto;
+        margin-right: 1rem;
+      }
+      
+      h1 {
+        font-size: 3.5rem;
+      }
+      
+      .features {
+        padding: 1.5rem;
+        font-size: 1rem;
+      }
+      
+      main {
+        padding: 2rem 1rem 3rem;
+        margin: 1rem;
+      }
+      
+      .join-button {
+        padding: 1rem 2rem;
+        font-size: 1.2rem;
+      }
+
+      .projects {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .project {
+        width: 80%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      h1 {
+        font-size: 2.8rem;
+      }
+      
+      p.subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .auth-buttons {
+        width: 100%;
+        justify-content: space-between;
+        margin: 1rem 0 0;
+      }
+      
+      .auth-buttons a {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        flex: 1;
+        text-align: center;
+      }
+
+      .project {
+        width: 100%;
+      }
+      
+      .features p {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Прелоадер -->
+  <div class="loading" id="loading">
+    <div class="loading-circle"></div>
+  </div>
+
+  <!-- Фоновые элементы -->
+  <div class="parallax-bg"></div>
+  <div class="particles" id="particles"></div>
+
+  <header>
+    <div class="logo-container">
+      <a href="index.html" aria-label="Главная">
+        <img src="logo.png" alt="Zeko logo" />
+      </a>
+    </div>
+    
+    <div class="menu-toggle" id="menuToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <div class="nav-links" id="navLinks">
+      <a href="onas.html">О нас</a>
+    </div>
+    
+    <div class="auth-buttons" role="navigation" aria-label="Авторизация">
+      <a href="profile.html">Профиль</a>
+      <a href="login.html">Войти</a>
+      <a href="register.html">Регистрация</a>
+    </div>
+  </header>
+  
+  <main>
+    <h1>Zeko</h1>
+    <p class="subtitle">
+      Zeko — это не просто приватный сервер, это живое и тёплое комьюнити увлечённых игроков.
+    </p>
+    <section class="features" aria-label="Преимущества сервера">
+      <p>Надёжная администрация, выявляющая нарушителей и отправляющая их в бедроковую тюрьму навечно</p>
+      <p>Круглосуточная поддержка — мы рядом в любой момент</p>
+	  <p>Java, лицензия не нужна</p>
+      <p>Стабильные 20 TPS — плавная и надёжная игра</p>
+      <p>Уникальные кастомные механики — подробнее <a href="dokym.html">здесь</a></p>
+      <p>Ванильный сервер — классика, которой можно наслаждаться</p>
+      <p>Доброжелательное сообщество, готовое поддержать</p>
+      <p>Идеальное место для отдыха и расслабления</p>
+    </section>
+    <button class="join-button" onclick="location.href='popad.html'" aria-label="Перейти к регистрации">
+      Как попасть на сервер
+    </button>
+
+    <div class="projects">
+      <div class="project">
+        <img src="mgh.png" alt="MagicShield" class="project-image">
+        <h3 class="project-title">MagicShield</h3>
+        <div class="project-status">закончен</div>
+        <p class="project-description">
+          Погрузитесь в мир таинственной магии и загадочных приключений. MagicShield предлагает уникальный сюжет, полный загадок и тайн, которые предстоит разгадать. 
+          Исследуйте древние руины, находите артефакты и раскрывайте секреты забытых цивилизаций.
+        </p>
+      </div>
+      
+      <div class="project">
+        <img src="mgh2.png" alt="MagicShield 2" class="project-image">
+        <h3 class="project-title">MagicShield 2</h3>
+        <div class="project-status">закончен</div>
+        <p class="project-description">
+          Продолжение культового проекта с расширенной магической системой. Создавайте уникальные заклинания, собирайте коллекцию магических артефактов и шляп, 
+          участвуйте в турнирах волшебников. Глубокий сюжет с множеством поворотов не оставит равнодушным ни одного игрока.
+        </p>
+      </div>
+      
+      <div class="project">
+        <img src="zeko.png" alt="Zeko" class="project-image">
+        <h3 class="project-title">Zeko</h3>
+        <div class="project-status soon">скоро начнётся</div>
+        <p class="project-description">
+          Инновационный проект с уникальными самописными механиками, которые перевернут ваше представление о Minecraft. 
+          Увлекательный сюжет, динамичный геймплей и совершенно новые возможности. Подробнее о механиках можно узнать 
+          <a href="dokym.html" class="project-link">тут</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Скрываем прелоадер после загрузки
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loading').style.display = 'none';
+        }, 500);
+      }, 1000);
+    });
+
+    // Создаем фоновые частицы
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = window.innerWidth < 768 ? 20 : 40;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Случайные параметры частицы
+        const size = Math.random() * 6 + 2;
+        const posX = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * -20;
+        const opacity = Math.random() * 0.4 + 0.1;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.bottom = `-${size}px`;
+        particle.style.opacity = opacity;
+        particle.style.animation = `float ${duration}s linear infinite`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        // Случайный цвет частицы
+        const hue = 200 + Math.random() * 40; // голубые оттенки
+        particle.style.background = `hsla(${hue}, 100%, 70%, ${opacity})`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Запускаем создание частиц
+    createParticles();
+
+    // Параллакс эффект для фона
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      
+      document.querySelector('.parallax-bg').style.transform = `
+        translate(${x * 20 - 10}px, ${y * 20 - 10}px)
+      `;
+    });
+
+    // Анимация при наведении на пункты списка
+    const featureItems = document.querySelectorAll('.features p');
+    featureItems.forEach((item, index) => {
+      item.style.transitionDelay = `${index * 0.05}s`;
+    });
+
+    // Анимация кнопки при клике
+    const joinButton = document.querySelector('.join-button');
+    joinButton.addEventListener('click', function() {
+      this.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        location.href = 'popad.html';
+      }, 300);
+    });
+
+    // Гамбургер меню для мобильной версии
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      navLinks.classList.toggle('active');
+    });
+
+    // Закрытие меню при клике на ссылку
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        navLinks.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

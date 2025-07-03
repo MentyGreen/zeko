@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zeko — Профиль</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    /* Общие стили */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0a0a0a, #1a1a2e);
+      font-family: 'Montserrat', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Верхняя панель с градиентом и анимацией */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(270deg, #0b0b0c, #0f0f16, #151523);
+      background-size: 600% 600%;
+      animation: gradientAnimation 15s ease infinite;
+      box-shadow: 0 2px 10px rgba(0, 123, 255, 0.5);
+      user-select: none;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Лого Zeko с анимацией свечения */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        filter: drop-shadow(0 0 5px #4dabff);
+      }
+      50% {
+        filter: drop-shadow(0 0 15px #4dabff);
+      }
+    }
+
+    .logo-container img {
+      height: 50px;
+      animation: glow 3s ease-in-out infinite;
+      transition: transform 0.3s ease;
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    /* Кнопки "Выход из аккаунта" и "Все профили" */
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .auth-buttons button {
+      cursor: pointer;
+      color: #fff;
+      background: transparent;
+      border: 2px solid #4dabff;
+      padding: 0.6rem 1.3rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      box-shadow: 0 0 10px #4dabff;
+      transition: all 0.3s ease;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-buttons button::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(77, 171, 255, 0.3),
+        rgba(77, 171, 255, 0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .auth-buttons button:hover {
+      background: #4dabff;
+      color: #000;
+      box-shadow: 0 0 20px #4dabff;
+      transform: scale(1.05);
+    }
+
+    .auth-buttons button:hover::before {
+      animation: buttonShine 1.5s ease infinite;
+    }
+
+    @keyframes buttonShine {
+      0% {
+        transform: rotate(30deg) translate(-20%, -20%);
+      }
+      100% {
+        transform: rotate(30deg) translate(20%, 20%);
+      }
+    }
+
+    /* Основной контейнер */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 3rem 2rem;
+    }
+
+    /* Заголовок "Zeko" как на главной */
+    h1.title {
+      font-size: 4rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #4dabff, #007bff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 3rem;
+      user-select: none;
+      animation: titleFloat 4s ease-in-out infinite;
+      text-shadow: 0 0 10px rgba(77, 171, 255, 0.3);
+    }
+
+    @keyframes titleFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* Панель профиля */
+    .profile-panel {
+      background: #111;
+      padding: 2.5rem 3rem 3rem;
+      border-radius: 20px;
+      box-shadow: 0 6px 40px rgba(0, 123, 255, 0.3);
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: panelAppear 0.8s ease-out forwards;
+      animation-delay: 0.3s;
+    }
+
+    @keyframes panelAppear {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Аватарка в центре панели */
+    .avatar {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 2rem;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4dabff, #0a74ff);
+      box-shadow: 0 0 25px #4dabff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform: scale(0);
+      animation: avatarPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation-delay: 0.8s;
+    }
+
+    @keyframes avatarPop {
+      0% {
+        transform: scale(0);
+      }
+      80% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .avatar svg {
+      width: 70px;
+      height: 70px;
+      fill: white;
+      opacity: 0.9;
+      animation: iconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    /* Текстовые данные профиля */
+    .profile-panel p {
+      font-size: 1.4rem;
+      margin: 0.8rem 0;
+      font-weight: 700;
+      color: #aad4ff;
+      opacity: 0;
+      transform: translateX(-20px);
+      animation: textSlideIn 0.5s ease-out forwards;
+    }
+
+    .profile-panel p:nth-child(2) {
+      animation-delay: 1s;
+    }
+
+    .profile-panel p:nth-child(3) {
+      animation-delay: 1.2s;
+    }
+
+    @keyframes textSlideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .profile-panel p span {
+      color: #fff;
+      font-weight: 900;
+      position: relative;
+    }
+
+    .profile-panel p span::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #4dabff;
+      transition: width 0.3s ease;
+    }
+
+    .profile-panel p:hover span::after {
+      width: 100%;
+    }
+
+    /* Зеленая мини-панель "Вы игрок сервера!" */
+    .server-player-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #3acc47;
+      color: white;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 6px 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 15px #3acc47aa;
+      user-select: none;
+      transform: scale(0);
+      animation: badgePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation-delay: 1.5s;
+    }
+
+    @keyframes badgePop {
+      0% {
+        transform: scale(0);
+      }
+      80% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Галочка (иконка) */
+    .server-player-badge svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+      flex-shrink: 0;
+      animation: checkSpin 1s ease;
+    }
+
+    @keyframes checkSpin {
+      from {
+        transform: rotate(-90deg) scale(0.5);
+        opacity: 0;
+      }
+      to {
+        transform: rotate(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Кнопка для игроков сервера */
+    .server-player-button {
+      margin-top: 2rem;
+      background: linear-gradient(135deg, #3acc47, #2aa336);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 0 20px #3acc47aa;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: none; /* По умолчанию скрыта */
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .server-player-button.visible {
+      display: inline-block;
+      animation: fadeInUp 0.5s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .server-player-button::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .server-player-button:hover {
+      background: linear-gradient(135deg, #2aa336, #3acc47);
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px #3acc47cc;
+    }
+
+    .server-player-button:hover::before {
+      animation: buttonShine 1.5s ease infinite;
+    }
+
+    .server-player-button:active {
+      transform: translateY(1px);
+    }
+
+    /* Анимация фоновых частиц */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(77, 171, 255, 0.5);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      to {
+        transform: translateY(-100vh);
+      }
+    }
+
+    /* Анимация загрузки */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-circle {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(77, 171, 255, 0.2);
+      border-top-color: #4dabff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Мобильная адаптация */
+    @media (max-width: 768px) {
+      header {
+        padding: 0.8rem 1rem;
+      }
+      
+      .logo-container img {
+        height: 40px;
+      }
+      
+      .auth-buttons button {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+      }
+      
+      main {
+        padding: 2rem 1rem;
+      }
+      
+      h1.title {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+      }
+      
+      .profile-panel {
+        padding: 2rem 1.5rem;
+      }
+      
+      .avatar {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 1.5rem;
+      }
+      
+      .avatar svg {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .profile-panel p {
+        font-size: 1.2rem;
+      }
+      
+      .server-player-button {
+        padding: 0.9rem 1.5rem;
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 0.6rem 0.8rem;
+      }
+      
+      .logo-container img {
+        height: 35px;
+      }
+      
+      .auth-buttons {
+        gap: 0.5rem;
+      }
+      
+      .auth-buttons button {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+      }
+      
+      h1.title {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .profile-panel {
+        padding: 1.5rem 1rem;
+      }
+      
+      .profile-panel p {
+        font-size: 1.1rem;
+      }
+      
+      .server-player-badge {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Прелоадер -->
+  <div class="loading" id="loading">
+    <div class="loading-circle"></div>
+  </div>
+
+  <!-- Фоновые частицы -->
+  <div class="particles" id="particles"></div>
+
+  <header>
+    <a href="index.html" class="logo-container" aria-label="Главная">
+      <img src="logo.png" alt="Логотип Zeko" />
+    </a>
+    <div class="auth-buttons">
+      <button id="logoutBtn" aria-label="Выход из аккаунта">Выход из аккаунта</button>
+      <button id="allProfilesBtn" aria-label="Все профили">Все профили</button>
+    </div>
+  </header>
+
+  <main>
+   <h1 class="title">Zeko</h1>
+    <div class="profile-panel" id="profile-panel">
+      <div class="avatar" title="Аватар пользователя">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+
+      <p><strong>Имя пользователя:</strong> <span id="username">Загрузка...</span></p>
+      <p><strong>Баланс Zeko-Coins:</strong> <span id="zekoCoins">Загрузка...</span></p>
+
+      <!-- Зеленая панель игрока сервера (показывается через JS) -->
+      <div class="server-player-badge" id="server-player-badge" style="display:none;" aria-live="polite">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M9 16.17l-3.88-3.88a1 1 0 1 0-1.41 1.41l4.59 4.59a1 1 0 0 0 1.41 0l9.59-9.59a1 1 0 1 0-1.41-1.41L9 16.17z"/>
+        </svg>
+        Вы игрок сервера!
+      </div>
+    </div>
+
+    <!-- Кнопка для игроков сервера (появляется только если isServerPlayer = true) -->
+    <button class="server-player-button" id="serverPlayerButton">
+      Для игроков сервера
+    </button>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqobpL7-_TRQSJqoguPnBQBoCoMQlHHSg",
+      authDomain: "zeko-b744b.firebaseapp.com",
+      projectId: "zeko-b744b",
+      storageBucket: "zeko-b744b.firebasestorage.app",
+      messagingSenderId: "669793421645",
+      appId: "1:669793421645:web:1a9db0e7ec478d1ef30f04",
+      measurementId: "G-HXPFN07ZFB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Скрываем прелоадер после загрузки страницы
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loading').style.display = 'none';
+        }, 500);
+      }, 1000);
+    });
+
+    // Создаем фоновые частицы
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Случайные параметры частицы
+        const size = Math.random() * 5 + 2;
+        const posX = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * -20;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.bottom = `-${size}px`;
+        particle.style.opacity = Math.random() * 0.5 + 0.1;
+        particle.style.animation = `float ${duration}s linear infinite`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Запускаем создание частиц
+    createParticles();
+
+    const usernameEl = document.getElementById('username');
+    const zekoCoinsEl = document.getElementById('zekoCoins');
+    const serverPlayerBadge = document.getElementById('server-player-badge');
+    const serverPlayerButton = document.getElementById('serverPlayerButton');
+
+    // Анимация изменения баланса
+    function animateValue(element, start, end, duration) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const value = Math.floor(progress * (end - start) + start);
+        element.textContent = value;
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // Обработчик клика по кнопке "Для игроков сервера"
+    serverPlayerButton.addEventListener('click', () => {
+      // Анимация при нажатии
+      serverPlayerButton.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        window.location.href = 'server-player.html';
+      }, 300);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const data = userDocSnap.data();
+          usernameEl.textContent = data.username ?? 'Нет данных';
+          
+          // Анимируем изменение баланса
+          const currentCoins = parseInt(zekoCoinsEl.textContent) || 0;
+          const newCoins = data.zekoCoins !== undefined ? data.zekoCoins : 0;
+          animateValue(zekoCoinsEl, currentCoins, newCoins, 1000);
+
+          if (data.isServerPlayer) {
+            serverPlayerBadge.style.display = 'flex';
+            // Анимация появления бейджа
+            setTimeout(() => {
+              serverPlayerBadge.style.animation = 'badgePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+            }, 100);
+            
+            // Показываем кнопку для игроков сервера с анимацией
+            serverPlayerButton.style.display = 'block';
+            setTimeout(() => {
+              serverPlayerButton.style.animation = 'fadeInUp 0.5s ease forwards';
+              serverPlayerButton.style.animationDelay = '1.6s';
+            }, 100);
+          } else {
+            serverPlayerBadge.style.display = 'none';
+            serverPlayerButton.style.display = 'none';
+          }
+        } else {
+          usernameEl.textContent = 'Документ не найден';
+          zekoCoinsEl.textContent = '-';
+          serverPlayerBadge.style.display = 'none';
+          serverPlayerButton.style.display = 'none';
+        }
+      } else {
+        usernameEl.textContent = 'Пользователь не вошёл';
+        zekoCoinsEl.textContent = '-';
+        serverPlayerBadge.style.display = 'none';
+        serverPlayerButton.style.display = 'none';
+      }
+    });
+
+    // Обработчик кнопки выхода
+    const logoutBtn = document.getElementById('logoutBtn');
+    logoutBtn.addEventListener('click', () => {
+      // Анимация перед выходом
+      logoutBtn.style.transform = 'scale(0.9)';
+      logoutBtn.style.opacity = '0.8';
+      
+      setTimeout(() => {
+        signOut(auth).then(() => {
+          window.location.href = 'index.html';
+        }).catch((error) => {
+          alert('Ошибка при выходе: ' + error.message);
+          logoutBtn.style.transform = '';
+          logoutBtn.style.opacity = '';
+        });
+      }, 300);
+    });
+
+    // Обработчик кнопки "Все профили" (перенаправление на страницу профилей)
+    const allProfilesBtn = document.getElementById('allProfilesBtn');
+    allProfilesBtn.addEventListener('click', () => {
+      // Анимация перед переходом
+      allProfilesBtn.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        window.location.href = 'profiles.html'; 
+      }, 200);
+    });
+
+    // Анимация при наведении на элементы профиля
+    const profilePanel = document.getElementById('profile-panel');
+    profilePanel.addEventListener('mousemove', (e) => {
+      const { left, top, width, height } = profilePanel.getBoundingClientRect();
+      const x = (e.clientX - left) / width - 0.5;
+      const y = (e.clientY - top) / height - 0.5;
+      
+      profilePanel.style.transform = `
+        perspective(1000px)
+        rotateX(${y * 2}deg)
+        rotateY(${-x * 2}deg)
+      `;
+    });
+
+    profilePanel.addEventListener('mouseleave', () => {
+      profilePanel.style.transform = '';
+    });
+  </script>
+</body>
+</html>

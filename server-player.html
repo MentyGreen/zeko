@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeko — Игровые системы</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+
+    /* Базовые стили */
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0a0a0a, #121224);
+      font-family: 'Montserrat', sans-serif;
+      color: #e0e0e0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Сайдбар */
+    .sidebar {
+      width: 250px;
+      background: rgba(20, 20, 40, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 2rem 1rem;
+      border-right: 1px solid rgba(77, 171, 255, 0.1);
+      position: fixed;
+      height: 100vh;
+      z-index: 90;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      color: #4dabff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      padding-left: 1rem;
+      border-left: 3px solid #4dabff;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar-menu a {
+      display: block;
+      color: #b0c7ff;
+      text-decoration: none;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background: rgba(77, 171, 255, 0.1);
+      color: #fff;
+    }
+
+    .sidebar-menu a.active {
+      border-left: 3px solid #4dabff;
+    }
+
+    /* Основное содержимое */
+    .main-content {
+      flex: 1;
+      margin-left: 270px;
+      padding: 2rem;
+    }
+
+    /* Заголовок страницы */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-title {
+      color: #4dabff;
+      font-size: 2rem;
+      font-weight: 900;
+      margin: 0;
+      text-shadow: 0 0 10px rgba(77, 171, 255, 0.3);
+    }
+
+    /* Кнопки */
+    .submit-lawsuit-btn, .bank-btn {
+      background: linear-gradient(135deg, #3acc47, #2aa336);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(58, 204, 71, 0.5);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .submit-lawsuit-btn:hover, .bank-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 30px rgba(58, 204, 71, 0.7);
+    }
+
+    /* Список судебных дел */
+    .lawsuits-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .lawsuit-card {
+      background: rgba(30, 30, 60, 0.6);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid rgba(77, 171, 255, 0.1);
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .lawsuit-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .lawsuit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(77, 171, 255, 0.1);
+    }
+
+    .lawsuit-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0;
+      color: #fff;
+    }
+
+    .lawsuit-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+
+    .status-consideration {
+      background: rgba(77, 171, 255, 0.2);
+      color: #4dabff;
+    }
+
+    .status-scheduled {
+      background: rgba(106, 90, 205, 0.2);
+      color: #6a5acd;
+    }
+
+    .status-in_progress {
+      background: rgba(255, 165, 0, 0.2);
+      color: #ffa500;
+    }
+
+    .status-completed {
+      background: rgba(58, 204, 71, 0.2);
+      color: #3acc47;
+    }
+
+    .lawsuit-details {
+      margin-top: 1rem;
+    }
+
+    .lawsuit-detail {
+      display: flex;
+      margin-bottom: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    .detail-label {
+      font-weight: 700;
+      color: #b0c7ff;
+      min-width: 100px;
+    }
+
+    .detail-value {
+      color: #fff;
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    /* Банковская система */
+    .bank-section {
+      display: none;
+      background: rgba(30, 30, 60, 0.6);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(77, 171, 255, 0.1);
+    }
+
+    .bank-balance {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #4dabff;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .bank-form {
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #b0c7ff;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba(20, 20, 40, 0.8);
+      border: 1px solid rgba(77, 171, 255, 0.3);
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .transfer-btn {
+      background: linear-gradient(135deg, #4dabff, #2979ff);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      display: block;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .transfer-btn:hover {
+      background: linear-gradient(135deg, #2979ff, #4dabff);
+    }
+
+    .transactions-list {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .transaction {
+      padding: 0.8rem;
+      border-radius: 10px;
+      margin-bottom: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .transaction-in {
+      background: rgba(58, 204, 71, 0.1);
+      border-left: 4px solid #3acc47;
+    }
+
+    .transaction-out {
+      background: rgba(255, 71, 87, 0.1);
+      border-left: 4px solid #ff4757;
+    }
+
+    .transaction-amount {
+      font-weight: 700;
+    }
+
+    .transaction-in .transaction-amount {
+      color: #3acc47;
+    }
+
+    .transaction-out .transaction-amount {
+      color: #ff4757;
+    }
+
+    .transaction-details {
+      font-size: 0.8rem;
+      color: #b0c7ff;
+    }
+
+    /* Модальные окна */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, #080810, #15152c);
+      width: 90%;
+      max-width: 500px;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 0 40px rgba(77, 171, 255, 0.2);
+      position: relative;
+      margin: 1rem;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: #b0c7ff;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .modal-title {
+      color: #4dabff;
+      margin-top: 0;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    /* Админ-панель */
+    .admin-panel {
+      display: none;
+      background: rgba(30, 30, 60, 0.6);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 71, 87, 0.3);
+    }
+
+    .users-list {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+
+    .user-card {
+      background: rgba(40, 40, 80, 0.5);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .role-select {
+      padding: 0.5rem;
+      border-radius: 5px;
+      background: rgba(20, 20, 40, 0.8);
+      color: white;
+      border: 1px solid #4dabff;
+      margin: 0.5rem 0;
+      width: 100%;
+    }
+
+    .save-roles-btn {
+      background: #ff4757;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .save-roles-btn:hover {
+      background: #ff6b81;
+    }
+
+    /* Панель банкира */
+    .banker-panel {
+      display: none;
+      background: rgba(30, 30, 60, 0.6);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(58, 204, 71, 0.3);
+    }
+
+    /* Панель судьи */
+    .judge-panel {
+      display: none;
+      background: rgba(30, 30, 60, 0.6);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .status-select {
+      padding: 0.3rem 0.5rem;
+      border-radius: 5px;
+      background: rgba(20, 20, 40, 0.8);
+      color: white;
+      border: 1px solid #4dabff;
+      margin-right: 0.5rem;
+    }
+
+    .update-status-btn {
+      background: #ffa502;
+      color: white;
+      border: none;
+      padding: 0.3rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .update-status-btn:hover {
+      background: #ffb732;
+    }
+
+    /* Адаптив */
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 220px;
+      }
+      
+      .main-content {
+        margin-left: 230px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid rgba(77, 171, 255, 0.1);
+      }
+      
+      .main-content {
+        margin-left: 0;
+        padding: 1rem;
+      }
+      
+      .lawsuits-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .submit-lawsuit-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .user-card > div {
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+      
+      .role-select, .save-roles-btn {
+        width: 100%;
+      }
+      
+      .lawsuit-detail {
+        flex-direction: column;
+      }
+      
+      .detail-label {
+        margin-bottom: 0.3rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .modal-content {
+        padding: 1rem;
+      }
+      
+      .modal-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+      
+      .form-control {
+        padding: 0.6rem 0.8rem;
+      }
+      
+      .lawsuit-title {
+        font-size: 1.1rem;
+      }
+      
+      .lawsuit-status {
+        font-size: 0.6rem;
+        padding: 0.2rem 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Сайдбар -->
+  <div class="sidebar">
+    <div class="sidebar-header">Игровые системы</div>
+    <ul class="sidebar-menu">
+      <li><a href="#" class="active" id="courtsTab">Суды</a></li>
+      <li><a href="#" id="bankTab">Банковский счет</a></li>
+      <li><a href="#" id="adminTab" style="display: none;">Админ-панель</a></li>
+      <li><a href="#" id="bankerTab" style="display: none;">Банкир</a></li>
+      <li><a href="#" id="judgeTab" style="display: none;">Судья</a></li>
+    </ul>
+  </div>
+
+  <!-- Основное содержимое -->
+  <div class="main-content">
+    <!-- Секция судов -->
+    <div id="courtsSection">
+      <div class="page-header">
+        <h1 class="page-title">Судебные дела</h1>
+        <button class="submit-lawsuit-btn" id="openModalBtn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4V20M4 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Подать в суд
+        </button>
+      </div>
+
+      <!-- Список судебных дел -->
+      <div class="lawsuits-list" id="lawsuitsList">
+        <div class="loading-text">Загрузка данных...</div>
+      </div>
+    </div>
+
+    <!-- Секция банковского счета -->
+    <div id="bankSection" class="bank-section">
+      <div class="bank-balance">
+        Ваш баланс: <span id="zekoCoinsBalance">0</span> ZekoCoins
+      </div>
+      
+      <div class="bank-form">
+        <div class="form-group">
+          <label class="form-label" for="recipientName">Ник получателя</label>
+          <input type="text" class="form-control" id="recipientName" placeholder="Введите ник игрока">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="transferAmount">Сумма перевода</label>
+          <input type="number" class="form-control" id="transferAmount" placeholder="Введите сумму">
+        </div>
+        
+        <button class="transfer-btn" id="transferBtn">Перевести</button>
+      </div>
+      
+      <h3>История транзакций</h3>
+      <div class="transactions-list" id="transactionsList">
+        <div class="loading-text">Загрузка истории...</div>
+      </div>
+    </div>
+
+    <!-- Секция админ-панели -->
+    <div id="adminSection" class="admin-panel">
+      <h2>Админ-панель</h2>
+      <h3>Управление ролями пользователей</h3>
+      <div class="users-list" id="usersList">
+        <div class="loading-text">Загрузка пользователей...</div>
+      </div>
+    </div>
+
+    <!-- Секция банкира -->
+    <div id="bankerSection" class="banker-panel">
+      <h2>Панель банкира</h2>
+      <h3>Все транзакции системы</h3>
+      <div class="transactions-list" id="allTransactionsList">
+        <div class="loading-text">Загрузка транзакций...</div>
+      </div>
+    </div>
+
+    <!-- Секция судьи -->
+    <div id="judgeSection" class="judge-panel">
+      <h2>Панель судьи</h2>
+      <h3>Все судебные дела</h3>
+      <div class="lawsuits-list" id="allLawsuitsList">
+        <div class="loading-text">Загрузка дел...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно подачи иска -->
+  <div class="modal" id="lawsuitModal">
+    <div class="modal-content">
+      <button class="close-modal" id="closeModalBtn">&times;</button>
+      <h2 class="modal-title">Подача судебного иска</h2>
+      
+      <form id="lawsuitForm">
+        <div class="form-group">
+          <label class="form-label" for="lawsuitType">Тип иска</label>
+          <select class="form-control" id="lawsuitType" required>
+            <option value="" disabled selected>Выберите тип иска</option>
+            <option value="ban_appeal">Апелляция на бан</option>
+            <option value="player_complaint">Жалоба на игрока</option>
+            <option value="admin_complaint">Жалоба на администрацию</option>
+            <option value="other">Другое</option>
+          </select>
+        </div>
+        
+        <div class="form-group" id="defendantGroup" style="display: none;">
+          <label class="form-label" for="defendantName">Ник ответчика</label>
+          <input type="text" class="form-control" id="defendantName" placeholder="Введите ник игрока">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="lawsuitTitle">Заголовок иска</label>
+          <input type="text" class="form-control" id="lawsuitTitle" placeholder="Кратко опишите суть иска" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="lawsuitDescription">Подробное описание</label>
+          <textarea class="form-control" id="lawsuitDescription" required placeholder="Опишите ситуацию подробно, приведите доказательства"></textarea>
+        </div>
+        
+        <button type="submit" class="submit-btn">Подать иск</button>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged 
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      query, 
+      where, 
+      onSnapshot,
+      doc,
+      getDoc,
+      updateDoc,
+      arrayUnion,
+      serverTimestamp,
+      getDocs,
+      runTransaction
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqobpL7-_TRQSJqoguPnBQBoCoMQlHHSg",
+      authDomain: "zeko-b744b.firebaseapp.com",
+      projectId: "zeko-b744b",
+      storageBucket: "zeko-b744b.appspot.com",
+      messagingSenderId: "669793421645",
+      appId: "1:669793421645:web:1a9db0e7ec478d1ef30f04",
+      measurementId: "G-HXPFN07ZFB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Константы ролей и статусов
+    const ROLES = {
+      ADMIN: 'admin',
+      BANKER: 'банкир',
+      JUDGE: 'судья'
+    };
+
+    const STATUSES = {
+      PENDING: 'в ожидании',
+      CONSIDERATION: 'на рассмотрении',
+      SCHEDULED: 'будет проведен',
+      IN_PROGRESS: 'проводится',
+      COMPLETED: 'окончен'
+    };
+
+    // Элементы DOM
+    const courtsTab = document.getElementById('courtsTab');
+    const bankTab = document.getElementById('bankTab');
+    const adminTab = document.getElementById('adminTab');
+    const bankerTab = document.getElementById('bankerTab');
+    const judgeTab = document.getElementById('judgeTab');
+    
+    const courtsSection = document.getElementById('courtsSection');
+    const bankSection = document.getElementById('bankSection');
+    const adminSection = document.getElementById('adminSection');
+    const bankerSection = document.getElementById('bankerSection');
+    const judgeSection = document.getElementById('judgeSection');
+    
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const lawsuitModal = document.getElementById('lawsuitModal');
+    const lawsuitForm = document.getElementById('lawsuitForm');
+    const lawsuitsList = document.getElementById('lawsuitsList');
+    const lawsuitType = document.getElementById('lawsuitType');
+    const defendantGroup = document.getElementById('defendantGroup');
+    const zekoCoinsBalance = document.getElementById('zekoCoinsBalance');
+    const recipientName = document.getElementById('recipientName');
+    const transferAmount = document.getElementById('transferAmount');
+    const transferBtn = document.getElementById('transferBtn');
+    const transactionsList = document.getElementById('transactionsList');
+    const usersList = document.getElementById('usersList');
+    const allTransactionsList = document.getElementById('allTransactionsList');
+    const allLawsuitsList = document.getElementById('allLawsuitsList');
+
+    // Функция проверки ролей
+    function hasRole(userData, role) {
+      return userData.isAdmin || (userData.roles && userData.roles.includes(role));
+    }
+
+    // Функция показа/скрытия элементов интерфейса в зависимости от ролей
+    function updateUIForUser(userData) {
+      adminTab.style.display = userData?.isAdmin ? 'block' : 'none';
+      bankerTab.style.display = hasRole(userData, ROLES.BANKER) ? 'block' : 'none';
+      judgeTab.style.display = hasRole(userData, ROLES.JUDGE) ? 'block' : 'none';
+      
+      // Показываем кнопку подачи иска только для авторизованных пользователей
+      openModalBtn.style.display = userData ? 'flex' : 'none';
+      
+      // Если текущая секция недоступна, переключаем на доступную
+      if (adminSection.style.display === 'block' && !userData?.isAdmin) {
+        courtsTab.click();
+      }
+      if (bankerSection.style.display === 'block' && !hasRole(userData, ROLES.BANKER)) {
+        courtsTab.click();
+      }
+      if (judgeSection.style.display === 'block' && !hasRole(userData, ROLES.JUDGE)) {
+        courtsTab.click();
+      }
+    }
+
+    // Переключение между разделами
+    courtsTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetActiveTabs();
+      courtsTab.classList.add('active');
+      courtsSection.style.display = 'block';
+      bankSection.style.display = 'none';
+      adminSection.style.display = 'none';
+      bankerSection.style.display = 'none';
+      judgeSection.style.display = 'none';
+      
+      // Загружаем все судебные дела
+      loadAllLawsuitsForPublic();
+    });
+
+    bankTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetActiveTabs();
+      bankTab.classList.add('active');
+      courtsSection.style.display = 'none';
+      bankSection.style.display = 'block';
+      adminSection.style.display = 'none';
+      bankerSection.style.display = 'none';
+      judgeSection.style.display = 'none';
+    });
+
+    adminTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetActiveTabs();
+      adminTab.classList.add('active');
+      courtsSection.style.display = 'none';
+      bankSection.style.display = 'none';
+      adminSection.style.display = 'block';
+      bankerSection.style.display = 'none';
+      judgeSection.style.display = 'none';
+      loadUsersList();
+    });
+
+    bankerTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetActiveTabs();
+      bankerTab.classList.add('active');
+      courtsSection.style.display = 'none';
+      bankSection.style.display = 'none';
+      adminSection.style.display = 'none';
+      bankerSection.style.display = 'block';
+      judgeSection.style.display = 'none';
+      loadAllTransactions();
+    });
+
+    judgeTab.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetActiveTabs();
+      judgeTab.classList.add('active');
+      courtsSection.style.display = 'none';
+      bankSection.style.display = 'none';
+      adminSection.style.display = 'none';
+      bankerSection.style.display = 'none';
+      judgeSection.style.display = 'block';
+      loadAllLawsuits();
+    });
+
+    function resetActiveTabs() {
+      courtsTab.classList.remove('active');
+      bankTab.classList.remove('active');
+      adminTab.classList.remove('active');
+      bankerTab.classList.remove('active');
+      judgeTab.classList.remove('active');
+    }
+
+    // Загрузка списка пользователей для админа
+    async function loadUsersList() {
+      usersList.innerHTML = '<div class="loading-text">Загрузка пользователей...</div>';
+      
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        usersList.innerHTML = '';
+        
+        querySnapshot.forEach((doc) => {
+          const userData = doc.data();
+          const userId = doc.id;
+          
+          const userCard = document.createElement('div');
+          userCard.className = 'user-card';
+          userCard.innerHTML = `
+            <div>
+              <strong>${userData.username || 'Без ника'}</strong>
+              <div>${userData.email || 'Нет email'}</div>
+              <div>Роли: ${userData.roles ? userData.roles.join(', ') : 'нет'}</div>
+              ${userData.isAdmin ? '<div style="color: #ff4757;">Администратор</div>' : ''}
+            </div>
+            <div>
+              <select class="role-select" id="roleSelect-${userId}" multiple>
+                <option value="${ROLES.BANKER}" ${userData.roles && userData.roles.includes(ROLES.BANKER) ? 'selected' : ''}>Банкир</option>
+                <option value="${ROLES.JUDGE}" ${userData.roles && userData.roles.includes(ROLES.JUDGE) ? 'selected' : ''}>Судья</option>
+              </select>
+              <button class="save-roles-btn" data-userid="${userId}">Сохранить</button>
+            </div>
+          `;
+          
+          usersList.appendChild(userCard);
+        });
+        
+        // Добавляем обработчики для кнопок сохранения
+        document.querySelectorAll('.save-roles-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const userId = e.target.getAttribute('data-userid');
+            const roleSelect = document.getElementById(`roleSelect-${userId}`);
+            const selectedOptions = Array.from(roleSelect.selectedOptions).map(opt => opt.value);
+            
+            try {
+              await updateDoc(doc(db, "users", userId), {
+                roles: selectedOptions
+              });
+              alert('Роли успешно обновлены!');
+            } catch (error) {
+              console.error('Ошибка при обновлении ролей:', error);
+              alert('Произошла ошибка при обновлении ролей');
+            }
+          });
+        });
+      } catch (error) {
+        console.error('Ошибка при загрузке пользователей:', error);
+        usersList.innerHTML = '<div class="error-text">Ошибка при загрузке пользователей</div>';
+      }
+    }
+
+    // Загрузка всех транзакций для банкира
+    async function loadAllTransactions() {
+      allTransactionsList.innerHTML = '<div class="loading-text">Загрузка транзакций...</div>';
+      
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        allTransactionsList.innerHTML = '';
+        
+        let allTransactions = [];
+        
+        querySnapshot.forEach((userDoc) => {
+          const userData = userDoc.data();
+          const transactions = userData.transactions || [];
+          
+          transactions.forEach(transaction => {
+            allTransactions.push({
+              ...transaction,
+              userId: userDoc.id,
+              username: userData.username
+            });
+          });
+        });
+        
+        // Сортируем транзакции по дате (новые сверху)
+        allTransactions.sort((a, b) => {
+          const dateA = a.date?.toDate() || new Date(0);
+          const dateB = b.date?.toDate() || new Date(0);
+          return dateB - dateA;
+        });
+        
+        if (allTransactions.length === 0) {
+          allTransactionsList.innerHTML = '<div class="no-transactions">Нет транзакций в системе</div>';
+          return;
+        }
+        
+        allTransactions.forEach(transaction => {
+          const transactionEl = document.createElement('div');
+          transactionEl.className = `transaction transaction-${transaction.type}`;
+          
+          if (transaction.type === 'in') {
+            transactionEl.innerHTML = `
+              <div class="transaction-details">
+                Получено от: ${transaction.sender || "Аноним"}<br>
+                Получатель: ${transaction.username || "Аноним"}<br>
+                ${transaction.description || "Без описания"}
+              </div>
+              <div class="transaction-amount">+${transaction.amount} ZC</div>
+            `;
+          } else {
+            transactionEl.innerHTML = `
+              <div class="transaction-details">
+                Отправитель: ${transaction.username || "Аноним"}<br>
+                Отправлено: ${transaction.recipient || "Аноним"}<br>
+                ${transaction.description || "Без описания"}
+              </div>
+              <div class="transaction-amount">-${transaction.amount} ZC</div>
+            `;
+          }
+          
+          allTransactionsList.appendChild(transactionEl);
+        });
+      } catch (error) {
+        console.error('Ошибка при загрузке транзакций:', error);
+        allTransactionsList.innerHTML = '<div class="error-text">Ошибка при загрузке транзакций</div>';
+      }
+    }
+
+    // Загрузка всех судебных дел для судьи
+    async function loadAllLawsuits() {
+      allLawsuitsList.innerHTML = '<div class="loading-text">Загрузка дел...</div>';
+      
+      try {
+        const querySnapshot = await getDocs(collection(db, "lawsuits"));
+        allLawsuitsList.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+          allLawsuitsList.innerHTML = '<div class="no-lawsuits">Нет судебных дел в системе</div>';
+          return;
+        }
+        
+        // Получаем информацию о пользователях для отображения ников
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const usersMap = {};
+        usersSnapshot.forEach(doc => {
+          usersMap[doc.id] = doc.data().username;
+        });
+        
+        querySnapshot.forEach((doc) => {
+          const lawsuit = doc.data();
+          const lawsuitId = doc.id;
+          
+          const createdAt = lawsuit.createdAt.toDate();
+          const formattedDate = createdAt.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          const lawsuitCard = document.createElement('div');
+          lawsuitCard.className = 'lawsuit-card';
+          lawsuitCard.innerHTML = `
+            <div class="lawsuit-header">
+              <h3 class="lawsuit-title">${lawsuit.title}</h3>
+              <div>
+                <select class="status-select" id="statusSelect-${lawsuitId}">
+                  <option value="${STATUSES.PENDING}" ${lawsuit.status === STATUSES.PENDING ? 'selected' : ''}>В ожидании</option>
+                  <option value="${STATUSES.CONSIDERATION}" ${lawsuit.status === STATUSES.CONSIDERATION ? 'selected' : ''}>На рассмотрении</option>
+                  <option value="${STATUSES.SCHEDULED}" ${lawsuit.status === STATUSES.SCHEDULED ? 'selected' : ''}>Будет проведен</option>
+                  <option value="${STATUSES.IN_PROGRESS}" ${lawsuit.status === STATUSES.IN_PROGRESS ? 'selected' : ''}>Проводится</option>
+                  <option value="${STATUSES.COMPLETED}" ${lawsuit.status === STATUSES.COMPLETED ? 'selected' : ''}>Окончен</option>
+                </select>
+                <button class="update-status-btn" data-lawsuitid="${lawsuitId}">Обновить</button>
+              </div>
+            </div>
+            <div class="lawsuit-details">
+              <div class="lawsuit-detail">
+                <span class="detail-label">Истец:</span>
+                <span class="detail-value">${usersMap[lawsuit.plaintiff] || lawsuit.plaintiff}</span>
+              </div>
+              ${lawsuit.defendant ? `
+              <div class="lawsuit-detail">
+                <span class="detail-label">Ответчик:</span>
+                <span class="detail-value">${lawsuit.defendant}</span>
+              </div>
+              ` : ''}
+              <div class="lawsuit-detail">
+                <span class="detail-label">Тип иска:</span>
+                <span class="detail-value">${getLawsuitTypeName(lawsuit.type)}</span>
+              </div>
+              <div class="lawsuit-detail">
+                <span class="detail-label">Дата подачи:</span>
+                <span class="detail-value">${formattedDate}</span>
+              </div>
+              <div class="lawsuit-detail">
+                <span class="detail-label">Описание:</span>
+                <span class="detail-value">${lawsuit.description}</span>
+              </div>
+            </div>
+          `;
+          
+          allLawsuitsList.appendChild(lawsuitCard);
+        });
+        
+        // Добавляем обработчики для кнопок обновления статуса
+        document.querySelectorAll('.update-status-btn').forEach(btn => {
+          btn.addEventListener('click', async (e) => {
+            const lawsuitId = e.target.getAttribute('data-lawsuitid');
+            const statusSelect = document.getElementById(`statusSelect-${lawsuitId}`);
+            const newStatus = statusSelect.value;
+            
+            try {
+              await updateDoc(doc(db, "lawsuits", lawsuitId), {
+                status: newStatus
+              });
+              alert('Статус дела успешно обновлен!');
+            } catch (error) {
+              console.error('Ошибка при обновлении статуса:', error);
+              alert('Произошла ошибка при обновлении статуса');
+            }
+          });
+        });
+      } catch (error) {
+        console.error('Ошибка при загрузке дел:', error);
+        allLawsuitsList.innerHTML = '<div class="error-text">Ошибка при загрузке дел</div>';
+      }
+    }
+
+    // Загрузка всех судебных дел для публичного просмотра
+    async function loadAllLawsuitsForPublic() {
+      lawsuitsList.innerHTML = '<div class="loading-text">Загрузка данных...</div>';
+      
+      try {
+        const querySnapshot = await getDocs(collection(db, "lawsuits"));
+        lawsuitsList.innerHTML = '';
+        
+        if (querySnapshot.empty) {
+          lawsuitsList.innerHTML = '<div class="no-lawsuits">Нет судебных дел в системе</div>';
+          return;
+        }
+        
+        // Получаем информацию о пользователях для отображения ников
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const usersMap = {};
+        usersSnapshot.forEach(doc => {
+          usersMap[doc.id] = doc.data().username;
+        });
+        
+        querySnapshot.forEach((doc) => {
+          const lawsuit = doc.data();
+          const lawsuitId = doc.id;
+          
+          const createdAt = lawsuit.createdAt.toDate();
+          const formattedDate = createdAt.toLocaleDateString('ru-RU', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          
+          const lawsuitCard = document.createElement('div');
+          lawsuitCard.className = 'lawsuit-card';
+          lawsuitCard.innerHTML = `
+            <div class="lawsuit-header">
+              <h3 class="lawsuit-title">${lawsuit.title}</h3>
+              <span class="lawsuit-status ${getStatusClass(lawsuit.status)}">${lawsuit.status}</span>
+            </div>
+            <div class="lawsuit-details">
+              <div class="lawsuit-detail">
+                <span class="detail-label">Истец:</span>
+                <span class="detail-value">${usersMap[lawsuit.plaintiff] || lawsuit.plaintiff}</span>
+              </div>
+              ${lawsuit.defendant ? `
+              <div class="lawsuit-detail">
+                <span class="detail-label">Ответчик:</span>
+                <span class="detail-value">${lawsuit.defendant}</span>
+              </div>
+              ` : ''}
+              <div class="lawsuit-detail">
+                <span class="detail-label">Тип иска:</span>
+                <span class="detail-value">${getLawsuitTypeName(lawsuit.type)}</span>
+              </div>
+              <div class="lawsuit-detail">
+                <span class="detail-label">Дата подачи:</span>
+                <span class="detail-value">${formattedDate}</span>
+              </div>
+              <div class="lawsuit-detail">
+                <span class="detail-label">Описание:</span>
+                <span class="detail-value">${lawsuit.description}</span>
+              </div>
+            </div>
+          `;
+          
+          lawsuitsList.appendChild(lawsuitCard);
+        });
+      } catch (error) {
+        console.error('Ошибка при загрузке дел:', error);
+        lawsuitsList.innerHTML = '<div class="error-text">Ошибка при загрузке дел</div>';
+      }
+    }
+
+    // Показать/скрыть поле ответчика в зависимости от типа иска
+    lawsuitType.addEventListener('change', () => {
+      const selectedType = lawsuitType.value;
+      defendantGroup.style.display = 
+        (selectedType === 'player_complaint' || selectedType === 'admin_complaint') 
+          ? 'block' 
+          : 'none';
+    });
+
+    // Управление модальным окном
+    openModalBtn.addEventListener('click', () => {
+      lawsuitModal.style.display = 'flex';
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      lawsuitModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === lawsuitModal) {
+        lawsuitModal.style.display = 'none';
+      }
+    });
+
+    // Функция для форматирования текста с переносами каждые 20 символов
+    function formatTextWithLineBreaks(text) {
+      const chunkSize = 20;
+      const chunks = [];
+      for (let i = 0; i < text.length; i += chunkSize) {
+        chunks.push(text.substring(i, i + chunkSize));
+      }
+      return chunks.join('\n');
+    }
+
+    // Обработка отправки формы иска
+    lawsuitForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Для подачи иска необходимо войти в систему');
+        return;
+      }
+
+      const lawsuitData = {
+        type: lawsuitType.value,
+        title: lawsuitTitle.value,
+        description: formatTextWithLineBreaks(lawsuitDescription.value),
+        plaintiff: user.uid,
+        status: STATUSES.PENDING,
+        createdAt: new Date()
+      };
+
+      if (defendantName.value) {
+        lawsuitData.defendant = defendantName.value;
+      }
+
+      try {
+        await addDoc(collection(db, "lawsuits"), lawsuitData);
+        lawsuitModal.style.display = 'none';
+        lawsuitForm.reset();
+        alert('Иск успешно подан!');
+      } catch (error) {
+        console.error('Ошибка при подаче иска:', error);
+        alert('Произошла ошибка при подаче иска');
+      }
+    });
+
+    // Перевод ZekoCoins
+    transferBtn.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Для перевода необходимо войти в систему');
+        return;
+      }
+
+      const recipient = recipientName.value.trim();
+      const amount = parseFloat(transferAmount.value);
+
+      if (!recipient || isNaN(amount) || amount <= 0) {
+        alert('Пожалуйста, заполните все поля корректно');
+        return;
+      }
+
+      if (recipient.toLowerCase() === user.displayName?.toLowerCase()) {
+        alert('Нельзя переводить средства самому себе');
+        return;
+      }
+
+      try {
+        // Получаем данные отправителя
+        const senderRef = doc(db, "users", user.uid);
+        const senderSnap = await getDoc(senderRef);
+        
+        if (!senderSnap.exists()) {
+          alert('Ваш аккаунт не найден');
+          return;
+        }
+
+        // Находим получателя по никнейму
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("username", "==", recipient));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          alert('Получатель не найден');
+          return;
+        }
+
+        const recipientDoc = querySnapshot.docs[0];
+        const recipientRef = doc(db, "users", recipientDoc.id);
+        const recipientData = recipientDoc.data();
+
+        // Создаем объект транзакции
+        const senderTransaction = {
+          type: 'out',
+          amount: amount,
+          recipient: recipient,
+          date: new Date(),
+          description: `Перевод игроку ${recipient}`
+        };
+
+        const recipientTransaction = {
+          type: 'in',
+          amount: amount,
+          sender: senderSnap.data().username || "Аноним",
+          date: new Date(),
+          description: `Перевод от ${senderSnap.data().username || "Аноним"}`
+        };
+
+        // Выполняем транзакцию
+        await runTransaction(db, async (transaction) => {
+          const senderDoc = await transaction.get(senderRef);
+          const recipientDoc = await transaction.get(recipientRef);
+
+          if (!senderDoc.exists() || !recipientDoc.exists()) {
+            throw new Error("Один из пользователей не найден");
+          }
+
+          const senderBalance = senderDoc.data().zekoCoins || 0;
+          if (senderBalance < amount) {
+            throw new Error("Недостаточно средств на счету");
+          }
+
+          // Обновляем балансы и добавляем транзакции
+          transaction.update(senderRef, {
+            zekoCoins: senderBalance - amount,
+            transactions: arrayUnion(senderTransaction)
+          });
+
+          const recipientBalance = recipientDoc.data().zekoCoins || 0;
+          transaction.update(recipientRef, {
+            zekoCoins: recipientBalance + amount,
+            transactions: arrayUnion(recipientTransaction)
+          });
+        });
+
+        alert('Перевод успешно выполнен!');
+        recipientName.value = '';
+        transferAmount.value = '';
+      } catch (error) {
+        console.error('Ошибка при переводе:', error);
+        alert(`Произошла ошибка при переводе: ${error.message}`);
+      }
+    });
+
+    // Вспомогательная функция для получения названия типа иска
+    function getLawsuitTypeName(type) {
+      const types = {
+        'ban_appeal': 'Апелляция на бан',
+        'player_complaint': 'Жалоба на игрока',
+        'admin_complaint': 'Жалоба на администрацию',
+        'other': 'Другое'
+      };
+      return types[type] || type;
+    }
+
+    // Вспомогательная функция для получения класса статуса
+    function getStatusClass(status) {
+      switch(status) {
+        case STATUSES.PENDING: return 'status-pending';
+        case STATUSES.CONSIDERATION: return 'status-consideration';
+        case STATUSES.SCHEDULED: return 'status-scheduled';
+        case STATUSES.IN_PROGRESS: return 'status-in_progress';
+        case STATUSES.COMPLETED: return 'status-completed';
+        default: return 'status-pending';
+      }
+    }
+
+    // Загрузка данных пользователя
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        
+        // Слушаем изменения данных пользователя
+        onSnapshot(userRef, (doc) => {
+          if (doc.exists()) {
+            const userData = doc.data();
+            
+            // Обновляем интерфейс в зависимости от ролей
+            updateUIForUser(userData);
+            
+            // Обновляем баланс
+            zekoCoinsBalance.textContent = userData.zekoCoins || 0;
+            
+            // Обновляем историю транзакций
+            transactionsList.innerHTML = '';
+            const transactions = userData.transactions || [];
+            
+            if (transactions.length === 0) {
+              transactionsList.innerHTML = '<div class="no-transactions">Нет истории транзакций</div>';
+            } else {
+              // Сортируем транзакции по дате (новые сверху)
+              const sortedTransactions = [...transactions].sort((a, b) => {
+                const dateA = a.date?.toDate() || new Date(0);
+                const dateB = b.date?.toDate() || new Date(0);
+                return dateB - dateA;
+              });
+              
+              sortedTransactions.forEach(transaction => {
+                const transactionEl = document.createElement('div');
+                transactionEl.className = `transaction transaction-${transaction.type}`;
+                
+                if (transaction.type === 'in') {
+                  transactionEl.innerHTML = `
+                    <div class="transaction-details">
+                      Получено от: ${transaction.sender || "Аноним"}<br>
+                      ${transaction.description || "Без описания"}
+                    </div>
+                    <div class="transaction-amount">+${transaction.amount} ZC</div>
+                  `;
+                } else {
+                  transactionEl.innerHTML = `
+                    <div class="transaction-details">
+                      Отправлено: ${transaction.recipient || "Аноним"}<br>
+                      ${transaction.description || "Без описания"}
+                    </div>
+                    <div class="transaction-amount">-${transaction.amount} ZC</div>
+                  `;
+                }
+                
+                transactionsList.appendChild(transactionEl);
+              });
+            }
+          }
+        });
+
+        // Загрузка судебных дел пользователя
+        const lawsuitsQuery = query(collection(db, "lawsuits"), where("plaintiff", "==", user.uid));
+        onSnapshot(lawsuitsQuery, (snapshot) => {
+          // Эта функция теперь не используется для основного списка дел
+          // так как мы показываем все дела всем пользователям
+        });
+      } else {
+        // Для неавторизованных пользователей
+        updateUIForUser(null);
+        transactionsList.innerHTML = '<div class="auth-required">Для просмотра транзакций необходимо войти в систему</div>';
+        
+        // Загружаем все судебные дела
+        loadAllLawsuitsForPublic();
+      }
+    });
+
+    // Инициализация - загружаем все судебные дела при первой загрузке
+    loadAllLawsuitsForPublic();
+  </script>
+</body>
+</html>

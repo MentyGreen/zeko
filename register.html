@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Регистрация — Zeko</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+
+    /* Базовые стили */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #12122e);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Прелоадер */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-circle {
+      width: 60px;
+      height: 60px;
+      border: 5px solid rgba(77, 171, 255, 0.2);
+      border-top-color: #4dabff;
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Частицы фона */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(77, 171, 255, 0.3);
+      border-radius: 50%;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      to { transform: translateY(-100vh); }
+    }
+
+    /* Хедер */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(270deg, #0b0b0c, #0f0f16, #151523);
+      background-size: 200% 200%;
+      animation: gradientFlow 12s ease infinite;
+      box-shadow: 0 3px 20px rgba(77, 171, 255, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .logo-container img {
+      height: 50px;
+      filter: drop-shadow(0 0 8px #4dabff);
+      transition: all 0.3s ease;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .logo-container img:hover {
+      transform: scale(1.1) rotate(5deg);
+      filter: drop-shadow(0 0 15px #4dabff);
+      animation: none;
+    }
+
+    /* Основное содержимое */
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    /* Форма регистрации */
+    .register-form {
+      background: rgba(17, 17, 34, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 3rem;
+      border-radius: 20px;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0, 123, 255, 0.3);
+      border: 1px solid rgba(77, 171, 255, 0.2);
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes fadeInUp {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .register-form::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(77, 171, 255, 0.1) 0%, transparent 70%);
+      animation: rotateGradient 20s linear infinite;
+      z-index: -1;
+    }
+
+    @keyframes rotateGradient {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .register-form h2 {
+      margin-bottom: 2rem;
+      color: #4dabff;
+      font-size: 2rem;
+      text-align: center;
+      text-shadow: 0 0 10px #4dabff;
+      position: relative;
+    }
+
+    .register-form h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: #4dabff;
+      border-radius: 3px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #aad4ff;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(77, 171, 255, 0.3);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #4dabff;
+      box-shadow: 0 0 0 3px rgba(77, 171, 255, 0.2);
+      background: rgba(77, 171, 255, 0.05);
+    }
+
+    .form-group input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: linear-gradient(135deg, #4dabff, #2979ff);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(77, 171, 255, 0.4);
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(77, 171, 255, 0.6);
+    }
+
+    .submit-btn:hover::before {
+      animation: buttonShine 1.5s ease infinite;
+    }
+
+    @keyframes buttonShine {
+      0% { transform: rotate(30deg) translate(-20%, -20%); }
+      100% { transform: rotate(30deg) translate(20%, 20%); }
+    }
+
+    .submit-btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 3px 15px rgba(77, 171, 255, 0.4);
+    }
+
+    /* Мобильная адаптация */
+    @media (max-width: 768px) {
+      header {
+        padding: 0.8rem 1rem;
+      }
+      
+      .logo-container img {
+        height: 40px;
+      }
+      
+      main {
+        padding: 1.5rem;
+      }
+      
+      .register-form {
+        padding: 2rem 1.5rem;
+      }
+      
+      .register-form h2 {
+        font-size: 1.8rem;
+      }
+      
+      .form-group input {
+        padding: 0.9rem;
+      }
+      
+      .submit-btn {
+        padding: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header {
+        padding: 0.6rem;
+      }
+      
+      .logo-container img {
+        height: 35px;
+      }
+      
+      main {
+        padding: 1rem;
+      }
+      
+      .register-form {
+        padding: 1.5rem 1rem;
+      }
+      
+      .register-form h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+      
+      .form-group label {
+        font-size: 0.9rem;
+      }
+      
+      .form-group input {
+        padding: 0.8rem;
+        font-size: 0.95rem;
+      }
+      
+      .submit-btn {
+        padding: 0.9rem;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Прелоадер -->
+  <div class="loading" id="loading">
+    <div class="loading-circle"></div>
+  </div>
+
+  <!-- Фоновые частицы -->
+  <div class="particles" id="particles"></div>
+
+  <header>
+    <div class="logo-container">
+      <a href="index.html" aria-label="Главная">
+        <img src="logo.png" alt="Zeko logo" />
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <form class="register-form" id="register-form">
+      <h2>Регистрация</h2>
+      
+      <div class="form-group">
+        <label for="nickname">Ник (как в Minecraft)</label>
+        <input type="text" id="nickname" name="nickname" required placeholder="Введите ваш ник" />
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Почта</label>
+        <input type="email" id="email" name="email" required placeholder="example@example.com" />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" required placeholder="Не менее 6 символов" />
+      </div>
+      
+      <div class="form-group">
+        <label for="confirm-password">Повторите пароль</label>
+        <input type="password" id="confirm-password" name="confirm_password" required placeholder="Повторите ваш пароль" />
+      </div>
+      
+      <button type="submit" class="submit-btn">Зарегистрироваться</button>
+    </form>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+
+    // Скрываем прелоадер после загрузки
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loading').style.display = 'none';
+        }, 500);
+      }, 1000);
+    });
+
+    // Создаем фоновые частицы
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 30;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        const size = Math.random() * 5 + 2;
+        const posX = Math.random() * 100;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * -20;
+        const opacity = Math.random() * 0.3 + 0.1;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.bottom = `-${size}px`;
+        particle.style.opacity = opacity;
+        particle.style.animation = `float ${duration}s linear infinite`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    createParticles();
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqobpL7-_TRQSJqoguPnBQBoCoMQlHHSg",
+      authDomain: "zeko-b744b.firebaseapp.com",
+      projectId: "zeko-b744b",
+      storageBucket: "zeko-b744b.appspot.com",
+      messagingSenderId: "669793421645",
+      appId: "1:669793421645:web:1a9db0e7ec478d1ef30f04",
+      measurementId: "G-HXPFN07ZFB"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const registerForm = document.getElementById('register-form');
+    const submitBtn = document.querySelector('.submit-btn');
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Анимация нажатия кнопки
+      submitBtn.style.transform = 'translateY(2px)';
+      submitBtn.style.boxShadow = '0 2px 10px rgba(77, 171, 255, 0.4)';
+      
+      const nickname = document.getElementById('nickname').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (password !== confirmPassword) {
+        alert('Пароли не совпадают');
+        submitBtn.style.transform = '';
+        submitBtn.style.boxShadow = '';
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, "users", user.uid), {
+          username: nickname,
+          email: email,
+          zekoCoins: 0,
+          isServerPlayer: false,
+          roles: [], // Пустой массив ролей
+          isAdmin: false, // По умолчанию не админ
+          createdAt: serverTimestamp()
+        });
+
+        // Анимация успешной регистрации
+        submitBtn.textContent = 'Успешно!';
+        submitBtn.style.background = 'linear-gradient(135deg, #00ff88, #00cc6a)';
+        
+        setTimeout(() => {
+          window.location.href = 'profile.html';
+        }, 1000);
+      } catch (error) {
+        alert('Ошибка: ' + error.message);
+        submitBtn.style.transform = '';
+        submitBtn.style.boxShadow = '';
+      }
+    });
+
+    // Анимация полей формы при фокусе
+    const inputs = document.querySelectorAll('.form-group input');
+    inputs.forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.querySelector('label').style.color = '#4dabff';
+      });
+      
+      input.addEventListener('blur', () => {
+        input.parentElement.querySelector('label').style.color = '#aad4ff';
+      });
+    });
+  </script>
+</body>
+</html>
