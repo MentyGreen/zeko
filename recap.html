@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zeko Recap 2025</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #121224, #1a1a2e);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Конфетти */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #ff4d4d;
+      top: -10px;
+      opacity: 0;
+      z-index: 1000;
+    }
+
+    /* Анимации */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px currentColor; }
+      50% { text-shadow: 0 0 20px currentColor; }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); }
+      to { transform: translateX(-100%); }
+    }
+
+    @keyframes numberCount {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Прелоадер */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      transition: opacity 0.8s ease;
+    }
+
+    .loading-circle {
+      width: 70px;
+      height: 70px;
+      border: 5px solid rgba(77, 171, 255, 0.2);
+      border-top-color: #4dabff;
+      border-radius: 50%;
+      animation: spin 1.5s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      font-size: 1.2rem;
+      color: #4dabff;
+      font-weight: 500;
+      text-shadow: 0 0 10px #4dabff;
+    }
+
+    /* Шапка */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 3rem;
+      background: rgba(10, 10, 20, 0.9);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+      border-bottom: 2px solid #4dabff;
+    }
+
+    .logo-container img {
+      height: 50px;
+      filter: drop-shadow(0 0 10px #4dabff);
+      animation: floatUp 3s ease-in-out infinite;
+    }
+
+    .back-button {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 0.8rem 1.5rem;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #4dabff, #2979ff);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 0 15px rgba(77, 171, 255, 0.5);
+    }
+
+    .back-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 25px rgba(77, 171, 255, 0.8);
+    }
+
+    /* Основной контейнер */
+    .recap-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+      position: relative;
+    }
+
+    /* Заголовок рекапа */
+    .recap-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .recap-title h1 {
+      font-size: 4.5rem;
+      background: linear-gradient(90deg, #ff6b6b, #4dabff, #00ff88, #ffa726);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: gradientShift 5s ease infinite, fadeInUp 1s ease;
+      margin-bottom: 1rem;
+      font-weight: 900;
+    }
+
+    .recap-subtitle {
+      font-size: 1.5rem;
+      color: #b0c7ff;
+      animation: fadeInUp 1s ease 0.3s both;
+    }
+
+    .year-badge {
+      position: absolute;
+      top: -20px;
+      right: 20px;
+      background: linear-gradient(135deg, #ff6b6b, #ffa726);
+      color: white;
+      padding: 0.5rem 1.5rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* Слайдер */
+    .recap-slider {
+      position: relative;
+      height: 500px;
+      overflow: hidden;
+      border-radius: 25px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      margin-bottom: 3rem;
+      border: 3px solid rgba(77, 171, 255, 0.3);
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      background: linear-gradient(135deg, rgba(20, 20, 40, 0.9), rgba(30, 30, 60, 0.9));
+      backdrop-filter: blur(10px);
+    }
+
+    .slide.active {
+      opacity: 1;
+      z-index: 10;
+    }
+
+    .slide-icon {
+      font-size: 5rem;
+      margin-bottom: 2rem;
+      animation: floatUp 3s ease-in-out infinite;
+    }
+
+    .slide-number {
+      font-size: 6rem;
+      font-weight: 900;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #4dabff, #00ff88);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: numberCount 1s ease-out;
+    }
+
+    .slide-text {
+      font-size: 2.2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #fff;
+      max-width: 800px;
+      line-height: 1.4;
+    }
+
+    .slide-description {
+      font-size: 1.2rem;
+      color: #b0c7ff;
+      max-width: 700px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    /* Навигация слайдов */
+    .slider-nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .nav-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: rgba(77, 171, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-dot.active {
+      background: #4dabff;
+      transform: scale(1.3);
+      box-shadow: 0 0 15px #4dabff;
+    }
+
+    .nav-arrows {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .nav-arrow {
+      background: rgba(77, 171, 255, 0.2);
+      color: #4dabff;
+      border: none;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .nav-arrow:hover {
+      background: rgba(77, 171, 255, 0.4);
+      transform: scale(1.1);
+      box-shadow: 0 0 20px rgba(77, 171, 255, 0.5);
+    }
+
+    /* Статистика */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .stat-card {
+      background: rgba(20, 20, 40, 0.7);
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid rgba(77, 171, 255, 0.2);
+      animation: fadeInUp 0.8s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px);
+      border-color: #4dabff;
+      box-shadow: 0 15px 30px rgba(77, 171, 255, 0.3);
+    }
+
+    .stat-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #4dabff;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #4dabff, #00ff88);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .stat-label {
+      font-size: 1.2rem;
+      color: #b0c7ff;
+    }
+
+    /* Мемы и достижения */
+    .memes-section {
+      margin-bottom: 4rem;
+    }
+
+    .memes-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #ffa726;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    .memes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .meme-card {
+      background: rgba(30, 30, 60, 0.8);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border-left: 5px solid #ff6b6b;
+      transition: all 0.3s ease;
+    }
+
+    .meme-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    }
+
+    .meme-text {
+      font-size: 1.2rem;
+      color: #fff;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .meme-author {
+      font-size: 0.9rem;
+      color: #b0c7ff;
+      text-align: right;
+      font-style: italic;
+    }
+
+    /* Прогресс бар */
+    .progress-section {
+      margin-bottom: 4rem;
+    }
+
+    .progress-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #00ff88;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    .progress-item {
+      margin-bottom: 2rem;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 1.2rem;
+    }
+
+    .progress-bar {
+      height: 20px;
+      background: rgba(77, 171, 255, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #4dabff, #00ff88);
+      border-radius: 10px;
+      width: 0;
+      transition: width 1.5s ease;
+    }
+
+    /* Кнопка поделиться */
+    .share-section {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .share-button {
+      background: linear-gradient(135deg, #00ff88, #4dabff);
+      color: white;
+      border: none;
+      padding: 1.2rem 3rem;
+      font-size: 1.3rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+    }
+
+    .share-button:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 15px 30px rgba(0, 255, 136, 0.5);
+    }
+	
+	    /* Скриншоты года */
+    .screenshots-section {
+      margin-bottom: 4rem;
+      padding: 2rem;
+      background: rgba(20, 20, 40, 0.5);
+      border-radius: 20px;
+      border: 2px solid rgba(77, 171, 255, 0.2);
+    }
+
+    .screenshots-title {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #4dabff;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    .screenshots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .screenshot-card {
+      background: rgba(30, 30, 60, 0.8);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .screenshot-card:hover {
+      transform: translateY(-10px);
+      border-color: #4dabff;
+      box-shadow: 0 15px 30px rgba(77, 171, 255, 0.4);
+    }
+
+    .screenshot-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .screenshot-card:hover .screenshot-img {
+      transform: scale(1.05);
+    }
+
+    .screenshot-caption {
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.1rem;
+      color: #b0c7ff;
+      font-weight: 500;
+    }
+	
+	    /* Модальное окно для скриншотов */
+    .screenshot-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 2000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .screenshot-modal.active {
+        opacity: 1;
+    }
+    
+    .modal-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        backdrop-filter: blur(10px);
+    }
+    
+    .modal-content {
+        position: relative;
+        z-index: 2001;
+        max-width: 90%;
+        max-height: 90%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeInUp 0.3s ease;
+    }
+    
+    .modal-img {
+        max-width: 100%;
+        max-height: 70vh;
+        border-radius: 10px;
+        box-shadow: 0 0 40px rgba(77, 171, 255, 0.5);
+        cursor: zoom-in;
+        transition: transform 0.3s ease;
+    }
+    
+    .modal-img.zoomed {
+        transform: scale(1.8);
+        cursor: zoom-out;
+    }
+    
+    .modal-caption {
+        margin-top: 1.5rem;
+        font-size: 1.3rem;
+        color: #fff;
+        text-align: center;
+        background: rgba(20, 20, 40, 0.8);
+        padding: 1rem 2rem;
+        border-radius: 10px;
+        border: 1px solid rgba(77, 171, 255, 0.3);
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: -50px;
+        right: 0;
+        background: rgba(255, 107, 107, 0.8);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+        background: #ff6b6b;
+        transform: scale(1.1);
+    }
+    
+    .modal-prev,
+    .modal-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(77, 171, 255, 0.8);
+        color: white;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 1.8rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-prev {
+        left: -70px;
+    }
+    
+    .modal-next {
+        right: -70px;
+    }
+    
+    .modal-prev:hover,
+    .modal-next:hover {
+        background: #4dabff;
+        transform: translateY(-50%) scale(1.1);
+    }
+    
+    @media (max-width: 768px) {
+        .modal-prev,
+        .modal-next {
+            position: fixed;
+            top: auto;
+            bottom: 20px;
+            transform: none;
+        }
+        
+        .modal-prev {
+            left: 20px;
+        }
+        
+        .modal-next {
+            right: 20px;
+        }
+        
+        .modal-close {
+            top: 20px;
+            right: 20px;
+        }
+        
+        .modal-caption {
+            font-size: 1.1rem;
+            padding: 0.8rem 1rem;
+        }
+    }
+
+    /* Футер */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: rgba(10, 10, 20, 0.9);
+      border-top: 2px solid #4dabff;
+      margin-top: 4rem;
+    }
+
+    .footer-text {
+      font-size: 1.1rem;
+      color: #b0c7ff;
+      margin-bottom: 1rem;
+    }
+
+    .heart {
+      color: #ff6b6b;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Адаптив */
+    @media (max-width: 992px) {
+      .recap-title h1 {
+        font-size: 3.5rem;
+      }
+      
+      .slide-number {
+        font-size: 5rem;
+      }
+      
+      .slide-text {
+        font-size: 1.8rem;
+      }
+      
+      .recap-slider {
+        height: 450px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .recap-container {
+        padding: 0 1rem;
+      }
+      
+      .recap-title h1 {
+        font-size: 2.8rem;
+      }
+      
+      .recap-subtitle {
+        font-size: 1.2rem;
+      }
+      
+      .year-badge {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin: 0 auto 1rem;
+        width: fit-content;
+      }
+      
+      .recap-slider {
+        height: 400px;
+      }
+      
+      .slide {
+        padding: 2rem;
+      }
+      
+      .slide-number {
+        font-size: 4rem;
+      }
+      
+      .slide-text {
+        font-size: 1.5rem;
+      }
+      
+      .slide-icon {
+        font-size: 4rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .memes-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .recap-slider {
+        height: 350px;
+      }
+      
+      .slide-number {
+        font-size: 3rem;
+      }
+      
+      .slide-text {
+        font-size: 1.3rem;
+      }
+      
+      .stat-number {
+        font-size: 2.5rem;
+      }
+      
+      .share-button {
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Прелоадер -->
+  <div class="loading" id="loading">
+    <div class="loading-circle"></div>
+    <div class="loading-text">Загружаем ваш Zeko Recap...</div>
+  </div>
+
+  <!-- Шапка -->
+  <header>
+    <div class="logo-container">
+      <a href="index.html">
+        <img src="logo.png" alt="Zeko logo" />
+      </a>
+    </div>
+    
+    <a href="index.html" class="back-button">
+      <i class="fas fa-arrow-left"></i> На главную
+    </a>
+  </header>
+
+  <!-- Основной контент -->
+  <main class="recap-container">
+    <!-- Заголовок -->
+    <div class="recap-title">
+      <h1>Zeko Recap 2025</h1>
+      <div class="recap-subtitle">Год невероятных приключений, дружбы и достижений</div>
+      <div class="year-badge">2025</div>
+    </div>
+
+    <!-- Слайдер с достижениями -->
+    <div class="recap-slider" id="slider">
+      <!-- Слайд 1 -->
+      <div class="slide active" id="slide1">
+        <div class="slide-icon">⏰</div>
+        <div class="slide-number" id="hoursCount">0</div>
+        <div class="slide-text">Часов вместе в игре</div>
+        <div class="slide-description">Это <span id="daysCount">0</span> полных дней приключений в мире Zeko!</div>
+      </div>
+      
+      <!-- Слайд 2 -->
+      <div class="slide" id="slide2">
+        <div class="slide-icon">👥</div>
+        <div class="slide-number" id="playersCount">0</div>
+        <div class="slide-text">Уникальных игроков</div>
+        <div class="slide-description">Каждый оставил свой след в истории нашего сервера</div>
+      </div>
+      
+      <!-- Слайд 3 -->
+      <div class="slide" id="slide3">
+        <div class="slide-icon">🏗️</div>
+        <div class="slide-number" id="buildsCount">0</div>
+        <div class="slide-text">Построек завершено</div>
+        <div class="slide-description">От скромных домиков до грандиозных замков и городов</div>
+      </div>
+      
+      <!-- Слайд 4 -->
+      <div class="slide" id="slide4">
+        <div class="slide-icon">⚔️</div>
+        <div class="slide-number" id="mobsCount">0</div>
+        <div class="slide-text">Мобов повержено</div>
+        <div class="slide-description">Криперы, зомби, скелеты и другие угрозы мира Zeko</div>
+      </div>
+      
+      <!-- Слайд 6 -->
+      <div class="slide" id="slide6">
+        <div class="slide-icon">🎭</div>
+        <div class="slide-number" id="eventsCount">0</div>
+        <div class="slide-text">Мероприятий проведено</div>
+        <div class="slide-description">Турниры PvP, строительные конкурсы, квесты и многое другое</div>
+      </div>
+    </div>
+
+    <!-- Навигация слайдов -->
+    <div class="slider-nav" id="sliderNav">
+      <div class="nav-dot active" data-slide="0"></div>
+      <div class="nav-dot" data-slide="1"></div>
+      <div class="nav-dot" data-slide="2"></div>
+      <div class="nav-dot" data-slide="3"></div>
+      <div class="nav-dot" data-slide="4"></div>
+      <div class="nav-dot" data-slide="5"></div>
+    </div>
+
+    <!-- Стрелки навигации -->
+    <div class="nav-arrows">
+      <button class="nav-arrow" id="prevSlide">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="nav-arrow" id="nextSlide">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Статистика -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🚀</div>
+        <div class="stat-number">~240к</div>
+        <div class="stat-label">Фейерверков запущено</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🍰</div>
+        <div class="stat-number">92</div>
+        <div class="stat-label">Тортов съедено</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon">🌍</div>
+        <div class="stat-number">8598км</div>
+        <div class="stat-label">Пройдено пешком</div>
+      </div>
+     
+    </div>
+
+    <!-- Мемы и забавные моменты -->
+    <div class="memes-section">
+      <h2 class="memes-title">Лучшие моменты 2025 🎭</h2>
+      <div class="memes-grid">
+        <div class="meme-card">
+          <div class="meme-text">"Дом голубя - магнит для лора"</div>
+          <div class="meme-author">— Mr_Barrierchik</div>
+        </div>
+        
+        <div class="meme-card">
+          <div class="meme-text">"Когда пол сервера строили купер таун, а его за пару минут съел скалк"</div>
+          <div class="meme-author">— VavaPrime</div>
+        </div>
+        
+        <div class="meme-card">
+          <div class="meme-text">"Робот сидит на диване а сзади 20 арморстендов"</div>
+          <div class="meme-author">— MentyGreen</div>
+        </div>
+      </div>
+	  
+	  <div class="meme-card">
+          <div class="meme-text">"Да я строил эту огромную постройку на 30к базальта в выживании!"</div>
+          <div class="meme-author">— MentyGreen</div>
+        </div>
+      </div>
+	  
+	  <div class="meme-card">
+          <div class="meme-text">"Что с моим бнр?! Почему тут дыра вместо него!"</div>
+          <div class="meme-author">— Astraix</div>
+        </div>
+      </div>
+	  
+	  <div class="meme-card">
+          <div class="meme-text">"Последний игрок который не вылечился от скалка"</div>
+          <div class="meme-author">— Izanchik</div>
+        </div>
+      </div>
+    </div>
+	
+	    <!-- Скриншоты года -->
+    <div class="screenshots-section">
+      <h2 class="screenshots-title">Лучшие скриншоты 2025 📸</h2>
+      <div class="screenshots-grid">
+        <div class="screenshot-card">
+          <img src="skr1.png" alt="Скриншот 1" class="screenshot-img">
+          <div class="screenshot-caption">"Скалк поглощение"</div>
+        </div>
+        <div class="screenshot-card">
+          <img src="skr2.png" alt="Скриншот 2" class="screenshot-img">
+          <div class="screenshot-caption">"Кафе"</div>
+        </div>
+        <div class="screenshot-card">
+          <img src="skr3.png" alt="Скриншот 3" class="screenshot-img">
+          <div class="screenshot-caption">"Бнр"</div>
+        </div>
+        <div class="screenshot-card">
+          <img src="skr4.png" alt="Скриншот 4" class="screenshot-img">
+          <div class="screenshot-caption">"ВаваНяшка"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr5.png" alt="Скриншот 5" class="screenshot-img">
+          <div class="screenshot-caption">"Альфредо"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr6.png" alt="Скриншот 6" class="screenshot-img">
+          <div class="screenshot-caption">"Мемасик"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr7.png" alt="Скриншот 7" class="screenshot-img">
+          <div class="screenshot-caption">"Скалк Поглощение 2"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr8.png" alt="Скриншот 8" class="screenshot-img">
+          <div class="screenshot-caption">"Скалковый метеор"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr9.png" alt="Скриншот 9" class="screenshot-img">
+          <div class="screenshot-caption">"Храм"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr10.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Командная работа"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr11.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"ВаваМен"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr12.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Вава конец зеко 1"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr13.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Осуждаем"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr14.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Красный метеор"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr15.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Анальная трещина"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr16.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"ВаваПортал"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr17.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"ОН СЖЁГ ЛЕС!"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr18.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Матрица"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr19.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Нескафе"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr20.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Аномалия?"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr21.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"БарьероМагазин"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr22.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Вавилонская башня"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr23.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Зап лягушка"</div>
+        </div>
+		<div class="screenshot-card">
+          <img src="skr24.png" alt="Скриншот 10" class="screenshot-img">
+          <div class="screenshot-caption">"Чё там барьер делает?"</div>
+        </div>
+		
+      </div>
+    </div>
+
+    <!-- Прогресс года -->
+    <div class="progress-section">
+      <h2 class="progress-title">Наш прогресс 📈</h2>
+      
+      <div class="progress-item">
+        <div class="progress-label">
+          <span>Активность игроков</span>
+          <span>74%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 74%;"></div>
+        </div>
+      </div>
+      
+      <div class="progress-item">
+        <div class="progress-label">
+          <span>Достижение целей сервера</span>
+          <span>83%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 83%;"></div>
+        </div>
+      </div>
+      
+      <div class="progress-item">
+        <div class="progress-label">
+          <span>Удовлетворённость комьюнити</span>
+          <span>88%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 88%;"></div>
+        </div>
+      </div>
+    </div>
+
+   
+  </main>
+
+  <!-- Футер -->
+  <footer>
+    <div class="footer-text">Спасибо, что были с нами в 2025 году!</div>
+    <div class="footer-text">Ждём вас в следующем году для новых приключений <span class="heart">❤️</span></div>
+    <div class="footer-text">Zeko Community © 2025</div>
+  </footer>
+
+  <script>
+ 
+  
+    // Данные для рекапа (замените на реальные цифры)
+    const recapData = {
+      totalHours: 4557,
+      uniquePlayers: 41,
+      buildsCompleted: 69,
+      mobsKilled: 220454,
+      diamondsMined: 156892,
+      eventsHeld: 11
+    };
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+      // Скрываем прелоадер
+      setTimeout(() => {
+        document.getElementById('loading').style.opacity = '0';
+        setTimeout(() => {
+          document.getElementById('loading').style.display = 'none';
+          createConfetti();
+          startAnimations();
+        }, 800);
+      }, 2000);
+
+      // Анимация чисел
+      function animateNumber(elementId, finalValue, duration = 2000) {
+        const element = document.getElementById(elementId);
+        let startValue = 0;
+        const increment = finalValue / (duration / 16); // 60fps
+        let currentValue = 0;
+        
+        const timer = setInterval(() => {
+          currentValue += increment;
+          if (currentValue >= finalValue) {
+            currentValue = finalValue;
+            clearInterval(timer);
+          }
+          element.textContent = Math.floor(currentValue).toLocaleString();
+        }, 16);
+      }
+
+      // Запуск анимаций чисел
+      function startAnimations() {
+        // Слайд 1
+        animateNumber('hoursCount', recapData.totalHours);
+        animateNumber('daysCount', Math.floor(recapData.totalHours / 24));
+        
+        // Остальные числа будут анимироваться при переключении слайдов
+      }
+
+      // Создание конфетти
+      function createConfetti() {
+        const colors = ['#ff6b6b', '#4dabff', '#00ff88', '#ffa726', '#ff4dff'];
+        const confettiCount = 150;
+        
+        for (let i = 0; i < confettiCount; i++) {
+          const confetti = document.createElement('div');
+          confetti.className = 'confetti';
+          
+          // Случайные свойства
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const size = Math.random() * 10 + 5;
+          const left = Math.random() * 100;
+          const duration = Math.random() * 3 + 2;
+          const delay = Math.random() * 5;
+          
+          confetti.style.background = color;
+          confetti.style.width = `${size}px`;
+          confetti.style.height = `${size}px`;
+          confetti.style.left = `${left}%`;
+          confetti.style.animation = `floatUp ${duration}s ease-in ${delay}s forwards`;
+          confetti.style.opacity = '0.8';
+          
+          document.body.appendChild(confetti);
+          
+          // Удаляем конфетти после анимации
+          setTimeout(() => {
+            confetti.remove();
+          }, (duration + delay) * 1000);
+        }
+      }
+
+      // Слайдер
+      const slides = document.querySelectorAll('.slide');
+      const dots = document.querySelectorAll('.nav-dot');
+      const prevBtn = document.getElementById('prevSlide');
+      const nextBtn = document.getElementById('nextSlide');
+      let currentSlide = 0;
+      
+      // Функция для показа слайда
+      function showSlide(index) {
+        // Скрываем все слайды
+        slides.forEach(slide => {
+          slide.classList.remove('active');
+        });
+        
+        // Убираем активный класс со всех точек
+        dots.forEach(dot => {
+          dot.classList.remove('active');
+        });
+        
+        // Показываем выбранный слайд
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        currentSlide = index;
+        
+        // Анимируем числа на текущем слайде
+        const numberElement = slides[index].querySelector('.slide-number');
+        if (numberElement && numberElement.textContent === '0') {
+          const id = numberElement.id;
+          let finalValue = 0;
+          
+          switch(id) {
+            case 'hoursCount': finalValue = recapData.totalHours; break;
+            case 'playersCount': finalValue = recapData.uniquePlayers; break;
+            case 'buildsCount': finalValue = recapData.buildsCompleted; break;
+            case 'mobsCount': finalValue = recapData.mobsKilled; break;
+            case 'diamondsCount': finalValue = recapData.diamondsMined; break;
+            case 'eventsCount': finalValue = recapData.eventsHeld; break;
+          }
+          
+          animateNumber(id, finalValue);
+        }
+      }
+      
+      // События для точек
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          showSlide(index);
+        });
+      });
+      
+      // События для стрелок
+      prevBtn.addEventListener('click', () => {
+        let newIndex = currentSlide - 1;
+        if (newIndex < 0) newIndex = slides.length - 1;
+        showSlide(newIndex);
+      });
+      
+      nextBtn.addEventListener('click', () => {
+        let newIndex = currentSlide + 1;
+        if (newIndex >= slides.length) newIndex = 0;
+        showSlide(newIndex);
+      });
+      
+      // Автопрокрутка слайдов
+      let slideInterval = setInterval(() => {
+        let newIndex = currentSlide + 1;
+        if (newIndex >= slides.length) newIndex = 0;
+        showSlide(newIndex);
+      }, 8000);
+      
+      // Остановка автопрокрутки при наведении
+      const slider = document.getElementById('slider');
+      slider.addEventListener('mouseenter', () => {
+        clearInterval(slideInterval);
+      });
+      
+      slider.addEventListener('mouseleave', () => {
+        slideInterval = setInterval(() => {
+          let newIndex = currentSlide + 1;
+          if (newIndex >= slides.length) newIndex = 0;
+          showSlide(newIndex);
+        }, 8000);
+      });
+      
+      // Кнопка поделиться
+      document.getElementById('shareButton').addEventListener('click', function() {
+        this.innerHTML = '<i class="fas fa-check"></i> Скопировано в буфер!';
+        this.style.background = 'linear-gradient(135deg, #00ff88, #4dabff)';
+        
+        // Копируем текст для sharing
+        const shareText = `Мой Zeko Recap 2025! 🎉\nВместе мы наиграли ${recapData.totalHours.toLocaleString()} часов!\nПрисоединяйся к нам в следующем году!\n\nzeko-server.ru/recap.html`;
+        
+        navigator.clipboard.writeText(shareText).then(() => {
+          setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-share-alt"></i> Поделиться своим Recap';
+          }, 2000);
+        });
+      });
+      
+      // Анимация progress bars
+      const progressFills = document.querySelectorAll('.progress-fill');
+      setTimeout(() => {
+        progressFills.forEach(fill => {
+          const width = fill.style.width;
+          fill.style.width = '0';
+          setTimeout(() => {
+            fill.style.width = width;
+          }, 300);
+        });
+      }, 1000);
+    });
+	
+	// Модальное окно для скриншотов
+const screenshotCards = document.querySelectorAll('.screenshot-card');
+
+screenshotCards.forEach(card => {
+    card.addEventListener('click', function() {
+        const imgSrc = this.querySelector('.screenshot-img').src;
+        const caption = this.querySelector('.screenshot-caption').textContent;
+        
+        // Создаем модальное окно
+        const modal = document.createElement('div');
+        modal.className = 'screenshot-modal';
+        modal.innerHTML = `
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button class="modal-close">&times;</button>
+                <button class="modal-prev">‹</button>
+                <img src="${imgSrc}" alt="Скриншот" class="modal-img">
+                <button class="modal-next">›</button>
+                <div class="modal-caption">${caption}</div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Закрытие модального окна
+        const closeBtn = modal.querySelector('.modal-close');
+        const overlay = modal.querySelector('.modal-overlay');
+        
+        closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        
+        // Навигация между скриншотами
+        const prevBtn = modal.querySelector('.modal-prev');
+        const nextBtn = modal.querySelector('.modal-next');
+        const modalImg = modal.querySelector('.modal-img');
+        
+        const allScreenshots = Array.from(screenshotCards);
+        const currentIndex = allScreenshots.indexOf(this);
+        
+        function showScreenshot(index) {
+            const newCard = allScreenshots[index];
+            const newImgSrc = newCard.querySelector('.screenshot-img').src;
+            const newCaption = newCard.querySelector('.screenshot-caption').textContent;
+            
+            modalImg.src = newImgSrc;
+            modal.querySelector('.modal-caption').textContent = newCaption;
+            
+            // Обновляем текущий индекс
+            currentIndex = index;
+        }
+        
+        prevBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let newIndex = currentIndex - 1;
+            if (newIndex < 0) newIndex = allScreenshots.length - 1;
+            showScreenshot(newIndex);
+        });
+        
+        nextBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            let newIndex = currentIndex + 1;
+            if (newIndex >= allScreenshots.length) newIndex = 0;
+            showScreenshot(newIndex);
+        });
+        
+        // Закрытие по Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            } else if (e.key === 'ArrowLeft') {
+                let newIndex = currentIndex - 1;
+                if (newIndex < 0) newIndex = allScreenshots.length - 1;
+                showScreenshot(newIndex);
+            } else if (e.key === 'ArrowRight') {
+                let newIndex = currentIndex + 1;
+                if (newIndex >= allScreenshots.length) newIndex = 0;
+                showScreenshot(newIndex);
+            }
+        });
+        
+        function closeModal() {
+            document.removeEventListener('keydown', arguments.callee);
+            document.body.removeChild(modal);
+        }
+        
+        // Открываем модальное окно
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    });
+});
+
+  </script>
+</body>
+</html>
