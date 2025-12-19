@@ -587,6 +587,65 @@
       transform: translateY(-9px) rotate(-45deg);
     }
 
+    /* Кнопка рекапа */
+    .recap-button {
+      background: linear-gradient(135deg, #ff6b6b, #ffa726);
+      color: #fff;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-size: 1.2rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 700;
+      margin-top: 2rem;
+      box-shadow:
+        0 0 15px #ff6b6b,
+        0 4px 20px #ffa726;
+      transition: all 0.35s ease;
+      user-select: none;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 1.6s;
+    }
+
+    .recap-button::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.3),
+        rgba(255, 255, 255, 0)
+      );
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+    }
+
+    .recap-button:hover {
+      background: linear-gradient(135deg, #ffa726, #ff6b6b);
+      transform: translateY(-3px) scale(1.05);
+      box-shadow:
+        0 0 25px #ff6b6b,
+        0 6px 25px #ffa726;
+    }
+
+    .recap-button:hover::before {
+      animation: buttonShine 1.5s ease infinite;
+    }
+
+    .recap-button:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 0 15px #ff6b6b;
+    }
+
     /* Адаптив */
     @media (max-width: 992px) {
       h1 {
@@ -665,6 +724,11 @@
       .project {
         width: 80%;
       }
+
+      .recap-button {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+      }
     }
 
     @media (max-width: 576px) {
@@ -724,6 +788,7 @@
     
     <div class="nav-links" id="navLinks">
       <a href="onas.html">О нас</a>
+      <a href="recap.html">Zeko Recap</a>
     </div>
     
     <div class="auth-buttons" role="navigation" aria-label="Авторизация">
@@ -784,6 +849,10 @@
         </p>
       </div>
     </div>
+
+    <button class="recap-button" onclick="location.href='recap.html'">
+      🎉 Zeko Recap 2024 🎉
+    </button>
   </main>
 
   <script>
